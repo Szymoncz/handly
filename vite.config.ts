@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/handly-pjwstk/', // Match repo name
+  base: '/handly/', // Match repo name
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
