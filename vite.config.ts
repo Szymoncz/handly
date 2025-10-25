@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/handly/', // Match repo name
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './dist'),
     },
   },
 });
