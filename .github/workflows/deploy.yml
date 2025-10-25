@@ -17,16 +17,18 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          PUBLIC_URL: https://Szymoncz.github.io/handly-pjwstk
-      - run: rm -rf ./dist/.git # Clean any .git folders
+          VITE_BASE: /handly/ # For Vite; use PUBLIC_URL for CRA
+      - run: |
+          ls -la dist/ # Debug: List build output
+          rm -rf dist/.git # Remove any .git folders
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist # Change to ./build if using Create React App
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
       - uses: actions/deploy-pages@v4
