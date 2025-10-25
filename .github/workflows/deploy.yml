@@ -17,10 +17,11 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          PUBLIC_URL: https://<username>.github.io/<repo-name>
+          PUBLIC_URL: https://Szymoncz.github.io/handly-pjwstk
+      - run: rm -rf ./dist/.git # Clean any .git folders
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist # Change to ./build for Create React App
+          path: ./dist # Change to ./build if using Create React App
   deploy:
     environment:
       name: github-pages
