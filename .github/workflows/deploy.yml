@@ -17,7 +17,7 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          PUBLIC_URL: https://Szymoncz.github.io/handly-pjwstk
+          PUBLIC_URL: https://Szymoncz.github.io/handly
       - run: rm -rf ./dist/.git # Clean any .git folders
       - uses: actions/upload-pages-artifact@v3
         with:
