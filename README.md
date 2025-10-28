@@ -1,3 +1,18 @@
+To build app locally, first clone the repository to your machine.
+
+Than in terminal run: npm start
+
+After every change first run locally the app - only after testing on local machine send changes to repo.
+
+To deploy on githubpages after changes and pushed code to repo,
+run in terminal: npm run deploy.
+
+Wait few seconds and refresh the https://szymoncz.github.io/handly/ page.
+
+Happy coding :)
+
+BELOW IS ORIGINAL REACT DOCUMENTATION
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
