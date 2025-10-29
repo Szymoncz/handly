@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f0009e-8fb6-4450-9a03-32a6bb8c1552" name="Changes" comment="" />
+    <list default="true" id="45f0009e-8fb6-4450-9a03-32a6bb8c1552" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,6 +66,25 @@
   }
 }]]></component>
   <component name="RunManager">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="handly" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="handly" />
+      <working_directory value="$PROJECT_DIR$" />
+      <go_parameters value="-i" />
+      <kind />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="handly" />
       <method v="2">
@@ -93,7 +114,9 @@
       <updated>1761378997502</updated>
       <workItem from="1761378999056" duration="4574000" />
       <workItem from="1761411861362" duration="745000" />
-      <workItem from="1761693431343" duration="641000" />
+      <workItem from="1761693431343" duration="1064000" />
+      <workItem from="1761722832207" duration="30000" />
+      <workItem from="1761772875529" duration="574000" />
     </task>
     <servers />
   </component>
