@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const BASE_URL = "https://szymoncz.github.io/handly/";
+const BASE_URL = "https://szymoncz.github.io/handly";
 
 const routes = [
     "/",
