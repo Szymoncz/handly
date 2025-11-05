@@ -1,29 +1,27 @@
-import logo from './logo.svg';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import './App.css';
-import TestComponent from './components/TestComponent'
-
+import Menu from './components/Menu'
+import Home from './pages/Home';
+import Onas from './pages/Onas';
+import Uslugi from './pages/Uslugi';
+import Kontakt from './pages/Kontakt';
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-          <TestComponent />
-
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-
+      <Router>
+          <Menu />
+          <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/o-nas" element={<Onas />} />
+              <Route path="/uslugi" element={<Uslugi />} />
+              <Route path="/kontakt" element={<Kontakt />} />
+          </Routes>
+      </Router>
   );
 }
-
 export default App;
+
+
+
+
+
