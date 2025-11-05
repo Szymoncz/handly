@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./menu.css";
 
 const menuItems = [
-    { name: "Strona główna", path: "/"},
+    { name: "Strona główna", path: "/handly"},
     { name: "O nas", path: "/o-nas"},
     { name: "Usługi", path: "/uslugi"},
     { name: "Kontakt", path: "/kontakt"},
