@@ -9,15 +9,19 @@ import Kontakt from './pages/Kontakt';
 
 function App() {
   return (
-      <>
+      <div className="container">
+          <div className="menu-wrapper">
           <Menu />
+          </div>
+          <main className="page-content">
           <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/o-nas/" element={<Onas />} />
               <Route path="/uslugi/" element={<Uslugi />} />
               <Route path="/kontakt/" element={<Kontakt />} />
           </Routes>
-      </>
+          </main>
+      </div>
   );
 }
 export default App;

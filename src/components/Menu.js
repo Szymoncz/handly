@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./menu.css";
 
-const menuItems = [
-    { name: "Strona główna", path: "/"},
-    { name: "O nas", path: "/o-nas/"},
-    { name: "Usługi", path: "/uslugi/"},
-    { name: "Kontakt", path: "/kontakt/"},
-];
+
 
 
 export default function Menu() {
     const [isOpen, setIsOpen] = useState(false);
+
+    const menuItems = [
+        { name: "Strona główna", path: "/"},
+        { name: "O nas", path: "/o-nas/"},
+        { name: "Usługi", path: "/uslugi/"},
+        { name: "Kontakt", path: "/kontakt/"},
+    ];
 
     return (
         <nav className="menu-container">
@@ -20,9 +22,7 @@ export default function Menu() {
                         onClick={() => setIsOpen(!isOpen)}
                         aria-label="Menu rozwijane"
                         >
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span className={`menu-icon ${isOpen ? "open" : ""}`}></span>
                 </button>
                 <ul className={`menu-list ${isOpen ? "open" : ""}`}>
                     {menuItems.map((item) => (
