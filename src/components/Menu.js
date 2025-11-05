@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import "./menu.css";
 
 const menuItems = [
-    { name: "Strona główna", path: "/handly"},
-    { name: "O nas", path: "/handly/o-nas"},
-    { name: "Usługi", path: "/handly/uslugi"},
-    { name: "Kontakt", path: "/handly/kontakt"},
+    { name: "Strona główna", path: "/handly/"},
+    { name: "O nas", path: "/handly/o-nas/"},
+    { name: "Usługi", path: "/handly/uslugi/"},
+    { name: "Kontakt", path: "/handly/kontakt/"},
 ];
 
 

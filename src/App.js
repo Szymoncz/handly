@@ -11,10 +11,10 @@ function App() {
       <Router>
           <Menu />
           <Routes>
-              <Route path="/handly" element={<Home />} />
-              <Route path="/handly/o-nas" element={<Onas />} />
-              <Route path="/handly/uslugi" element={<Uslugi />} />
-              <Route path="/handly/kontakt" element={<Kontakt />} />
+              <Route path="/handly/" element={<Home />} />
+              <Route path="/handly/o-nas/" element={<Onas />} />
+              <Route path="/handly/uslugi/" element={<Uslugi />} />
+              <Route path="/handly/kontakt/" element={<Kontakt />} />
           </Routes>
       </Router>
   );
