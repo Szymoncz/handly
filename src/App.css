@@ -28,6 +28,11 @@ body {
     padding: 10px 20px;
 }
 
+main {
+    padding-bottom: var(--footer-height, 70px);
+}
+
+
 @media (max-width: 768px) {
     .page-content {
         padding: 20px;

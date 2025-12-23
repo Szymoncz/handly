@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Onas from './pages/Onas';
 import Uslugi from './pages/Uslugi';
 import Kontakt from './pages/Kontakt';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -21,7 +22,9 @@ function App() {
               <Route path="/kontakt/" element={<Kontakt />} />
           </Routes>
           </main>
+          <Footer />
       </div>
+
   );
 }
 export default App;

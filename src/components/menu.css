@@ -1,9 +1,7 @@
-
 .menu-wrapper {
     max-width: 100%;
     margin: 0 auto;
 }
-
 
 .menu {
     display: flex;
@@ -16,7 +14,6 @@
     position: relative;
     z-index: 10;
 }
-
 
 .menu-list {
     display: flex;
@@ -33,7 +30,6 @@
     font-weight: 500;
     transition: color 0.3s ease;
 }
-
 
 .menu-list li a:hover {
     color: #007bff;
