@@ -2,7 +2,7 @@
     --footer-height: 70px;
 }
 
-.footer {
+.footer-wrapper {
     position: fixed;
     bottom: 0;
     left: 50%;
