@@ -22,7 +22,9 @@ function App() {
               <Route path="/kontakt/" element={<Kontakt />} />
           </Routes>
           </main>
+          <div>
           <Footer />
+          </div>
       </div>
 
   );
