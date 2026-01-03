@@ -11,11 +11,12 @@ import Logowanie from "./pages/Logowanie";
 
 function App() {
   return (
-    <div className="container">
-      <div className="menu-wrapper">
+    <div className="app">
+      <header className="container">
         <Menu />
-      </div>
-      <main className="page-content">
+      </header>
+
+      <main className="container page-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/o-nas/" element={<Onas />} />
@@ -24,9 +25,10 @@ function App() {
           <Route path="/logowanie/" element={<Logowanie />} />
         </Routes>
       </main>
-      <div className="footer-wrapper">
+
+      <footer className="container footer-wrapper">
         <Footer />
-      </div>
+      </footer>
     </div>
   );
 }

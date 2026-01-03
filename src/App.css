@@ -1,20 +1,38 @@
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  padding: 0;
   background-color: #e9f0f4;
-  font-family: "Segoe UI", Robot, sans-serif;
+  font-family: "Segoe UI", Roboto, sans-serif;
   color: #222;
 }
 
-.container {
+.app {
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  margin: 0 auto;
-  padding: 20px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container {
+  width: 100%;
   max-width: 768px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.menu-wrapper {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 10px 20px;
 }
 
 .page-content {
+  flex: 1; /* THIS makes footer sticky */
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
@@ -22,14 +40,10 @@ body {
   margin-top: 30px;
 }
 
-.menu-wrapper {
+.footer-wrapper {
+  margin-top: auto; /* pushes footer to bottom */
   background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  margin-top: 20px;
-  padding: 10px 20px;
-}
-
-main {
-  padding-bottom: var(--footer-height, 70px);
+  border-top: 1px solid #ccc;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 12px 12px 0 0;
 }

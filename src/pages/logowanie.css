@@ -1,4 +1,52 @@
+.auth-form {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .group {
-  display: grid;
-  grid-column: auto;
+  width: 80%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group .title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.group input {
+  padding: 10px 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.group input[type="submit"] {
+  margin-top: 12px;
+  cursor: pointer;
+  background: #0077cc;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}
+
+.auth-footer-text {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-secondary-btn {
+  display: block;
+  margin: 10px auto 0;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #0077cc;
+  background: transparent;
+  color: #0077cc;
+  cursor: pointer;
 }
