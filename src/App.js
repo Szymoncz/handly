@@ -25,7 +25,6 @@ function App() {
         </Routes>
       </main>
       <div className="footer-wrapper">
-        <p style={{ background: "red", color: "white" }}>TEST STOPKI</p>
         <Footer />
       </div>
     </div>
