@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Menu from "./components/Menu";
@@ -8,6 +7,7 @@ import Uslugi from "./pages/Uslugi";
 import Kontakt from "./pages/Kontakt";
 import Footer from "./components/Footer";
 import Logowanie from "./pages/Logowanie";
+import Rejestracja from "./pages/Rejestracja";
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
           <Route path="/uslugi/" element={<Uslugi />} />
           <Route path="/kontakt/" element={<Kontakt />} />
           <Route path="/logowanie/" element={<Logowanie />} />
+          <Route path="/rejestracja/" element={<Rejestracja />} />
         </Routes>
       </main>
 

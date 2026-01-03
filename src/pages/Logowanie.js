@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 import "./logowanie.css";
 
 export default function Logowanie() {
@@ -19,8 +19,9 @@ export default function Logowanie() {
       </form>
 
       <p className="auth-footer-text">Nie masz konta? Zarejestruj się!</p>
-
-      <button className="auth-secondary-btn">Rejestracja</button>
+      <Link to="/rejestracja/">
+        <button className="auth-secondary-btn">Rejestracja</button>
+      </Link>
     </>
   );
 }
