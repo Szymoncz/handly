@@ -19,14 +19,16 @@
   margin-bottom: 10px;
 }
 
-.group input {
+.group input,
+.register-button {
   padding: 10px 12px;
   font-size: 1rem;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
 
-.group input[type="submit"] {
+.group input[type="submit"],
+.register-button {
   margin-top: 12px;
   cursor: pointer;
   background: #0077cc;

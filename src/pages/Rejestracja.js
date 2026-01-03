@@ -80,7 +80,9 @@ export default function Rejestracja() {
 
         {error && <div className="error">{error}</div>}
 
-        <button type="submit">Zarejestruj się</button>
+        <button class="register-button" type="submit">
+          Zarejestruj się
+        </button>
       </div>
     </form>
   );
