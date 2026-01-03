@@ -7,7 +7,8 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  max-width: 100%;
+  width: 100%;
+  max-width: 768px;
   margin: 0 auto;
   background-color: #fff;
   border-top: 1px solid #ccc;
@@ -17,6 +18,7 @@
 
 .footer-inner {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
