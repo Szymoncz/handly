@@ -20,7 +20,7 @@ export default function Rejestracja() {
     setError("");
 
     try {
-      const response = await fetch("http://193.111.249.75:8001/users/", {
+      const response = await fetch("https://apihandly.ddns.net/users/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
