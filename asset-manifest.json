@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/handly/static/css/main.c1d51cd7.css",
-    "main.js": "/handly/static/js/main.98737a28.js",
+    "main.js": "/handly/static/js/main.49df59c0.js",
     "index.html": "/handly/index.html",
     "main.c1d51cd7.css.map": "/handly/static/css/main.c1d51cd7.css.map",
-    "main.98737a28.js.map": "/handly/static/js/main.98737a28.js.map"
+    "main.49df59c0.js.map": "/handly/static/js/main.49df59c0.js.map"
   },
   "entrypoints": [
     "static/css/main.c1d51cd7.css",
-    "static/js/main.98737a28.js"
+    "static/js/main.49df59c0.js"
   ]
 }
