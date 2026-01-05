@@ -1,7 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Rejestracja() {
+  const navigate = useNavigate();
+
+  const API_USERNAME = "admin";
+  const API_PASSWORD = "admin";
+
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     password: "",
   });
@@ -20,10 +27,13 @@ export default function Rejestracja() {
     setError("");
 
     try {
+      const credentials = btoa(`${API_USERNAME}:${API_PASSWORD}`);
+
       const response = await fetch("https://apihandly.ddns.net/users/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Basic ${credentials}`,
         },
         body: JSON.stringify(formData),
       });
@@ -32,6 +42,9 @@ export default function Rejestracja() {
 
       if (response.ok) {
         setSuccess(true);
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
       } else {
         setError(data.message || "Nie udało się zarejestrować...");
       }
@@ -42,7 +55,11 @@ export default function Rejestracja() {
   };
   if (success) {
     return (
-      <div>Brawo! Rejestracja się powiodła! Możesz ise teraz zalogować</div>
+      <div className="success-message">
+        Brawo! Rejestracja się powiodła! Możesz się teraz zalogować.
+        <br />
+        Przekierowywanie do logowania...
+      </div>
     );
   }
 
