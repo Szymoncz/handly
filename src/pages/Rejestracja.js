@@ -43,7 +43,7 @@ export default function Rejestracja() {
       if (response.ok) {
         setSuccess(true);
         setTimeout(() => {
-          navigate("/login");
+          navigate("/logowanie");
         }, 2000);
       } else {
         setError(data.message || "Nie udało się zarejestrować...");

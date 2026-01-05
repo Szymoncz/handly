@@ -2,6 +2,28 @@ import { Link } from "react-router-dom";
 import "./logowanie.css";
 
 export default function Logowanie() {
+  const login = "admin";
+  const password = "admin";
+
+  const headers = new Headers();
+  headers.set("Authorization", "Basic " + btoa(login + ":" + password));
+
+  fetch("https://apihandly.ddns.net/users/", {
+    method: "GET",
+    headers: headers,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Request failed: " + response.status);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   return (
     <>
       <form className="auth-form">
