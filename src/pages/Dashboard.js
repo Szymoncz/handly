@@ -3,8 +3,12 @@ import Offer from "../components/Offer";
 export default function Dashboard() {
   return (
     <>
-      <h1>Logged in user</h1>;
-      <Offer />
+      <h1>Dashboard for logged in</h1>
+      <ul>
+        <li>
+          <Offer />
+        </li>
+      </ul>
     </>
   );
 }
