@@ -44,7 +44,7 @@ export default function AddOffer({ onOfferCreated }) {
       setDescription("");
       setBudget("");
 
-      onOfferCreated(newOffer);
+      onOfferCreated?.(newOffer);
     } catch (err) {
       setError(err.message);
     }
