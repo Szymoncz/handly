@@ -19,7 +19,7 @@ function Offers() {
         }
 
         const data = await response.json();
-        setOffers(data);
+        setOffers(data.results);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -37,34 +37,35 @@ function Offers() {
     <div>
       <h2>Offers</h2>
 
-      {offers.map((offer) => (
-        <div
-          key={offer.id}
-          style={{
-            border: "1px solid #ddd",
-            padding: "12px",
-            marginBottom: "12px",
-            borderRadius: "6px",
-          }}
-        >
-          <h3>{offer.title}</h3>
+      {Array.isArray(offers) &&
+        offers.map((offer) => (
+          <div
+            key={offer.id}
+            style={{
+              border: "1px solid #ddd",
+              padding: "12px",
+              marginBottom: "12px",
+              borderRadius: "6px",
+            }}
+          >
+            <h3>{offer.title}</h3>
 
-          <p>{offer.description}</p>
+            <p>{offer.description}</p>
 
-          <p>
-            <strong>Budget:</strong> ${Number(offer.budget).toFixed(2)}
-          </p>
+            <p>
+              <strong>Budget:</strong> ${Number(offer.budget).toFixed(2)}
+            </p>
 
-          <p>
-            <strong>Creator ID:</strong> {offer.creator}
-          </p>
+            <p>
+              <strong>Creator ID:</strong> {offer.creator}
+            </p>
 
-          <p>
-            <strong>Created at:</strong>{" "}
-            {new Date(offer.timestamp).toLocaleString()}
-          </p>
-        </div>
-      ))}
+            <p>
+              <strong>Created at:</strong>{" "}
+              {new Date(offer.timestamp).toLocaleString()}
+            </p>
+          </div>
+        ))}
     </div>
   );
 }
