@@ -8,6 +8,7 @@ import Kontakt from "./pages/Kontakt";
 import Footer from "./components/Footer";
 import Logowanie from "./pages/Logowanie";
 import Rejestracja from "./pages/Rejestracja";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/kontakt/" element={<Kontakt />} />
           <Route path="/logowanie/" element={<Logowanie />} />
           <Route path="/rejestracja/" element={<Rejestracja />} />
+          <Route path="/dashboard/" element={<Dashboard />} />
         </Routes>
       </main>
 

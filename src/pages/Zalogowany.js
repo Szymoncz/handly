@@ -1,5 +1,5 @@
-import React from "react";
+import Dashboard from "./Dashboard";
 
 export default function Zalogowany() {
-  return <p>Zalogowany!</p>;
+  return <Dashboard />;
 }
