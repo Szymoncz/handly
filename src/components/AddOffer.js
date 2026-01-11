@@ -10,6 +10,7 @@ export default function AddOffer({ onOfferCreated }) {
       },
       body: JSON.stringify({
         title: offer.title,
+        creator: offer.creator,
         description: offer.description,
         budget: offer.budget,
       }),
