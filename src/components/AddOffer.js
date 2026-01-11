@@ -10,9 +10,9 @@ export default function AddOffer({ onOfferCreated }) {
       },
       body: JSON.stringify({
         title: offer.title,
-        creator: offer.creator,
         description: offer.description,
         budget: offer.budget,
+        creator: 1,
       }),
     });
 
@@ -25,7 +25,6 @@ export default function AddOffer({ onOfferCreated }) {
   }
 
   const [title, setTitle] = useState("");
-  const [creator, setCreator] = useState("");
   const [description, setDescription] = useState("");
   const [budget, setBudget] = useState("");
   const [error, setError] = useState(null);
@@ -35,14 +34,13 @@ export default function AddOffer({ onOfferCreated }) {
 
     try {
       const newOffer = await createOffer({
-        creator,
         title,
         description,
         budget,
       });
 
       setTitle("");
-      setCreator("");
+
       setDescription("");
       setBudget("");
 
@@ -62,15 +60,6 @@ export default function AddOffer({ onOfferCreated }) {
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-
-      <br />
-
-      <input
-        placeholder="Creator"
-        value={creator}
-        onChange={(e) => setCreator(e.target.value)}
         required
       />
 
