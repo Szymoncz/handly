@@ -2,115 +2,119 @@ import { useEffect, useState } from "react";
 import AddOffer from "./AddOffer";
 
 const API_URL = "https://apihandly.ddns.net/offers/";
+const API_ME = "https://apihandly.ddns.net/users/me/";
 const AUTH_HEADER = {
   Authorization: "Basic " + btoa("admin:admin"),
 };
 
 export default function Offers() {
   const [offers, setOffers] = useState([]);
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const currentUserId = 1;
 
   async function fetchOffers() {
-    try {
-      setLoading(true);
-      const response = await fetch(API_URL, {
-        headers: AUTH_HEADER,
-      });
+    const response = await fetch(API_URL, { headers: AUTH_HEADER });
+    const data = await response.json();
+    setOffers(data.results);
+  }
 
-      if (!response.ok) throw new Error("Failed to fetch offers");
-
-      const data = await response.json();
-      setOffers(data.results);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+  async function fetchCurrentUser() {
+    const response = await fetch(API_ME, { headers: AUTH_HEADER });
+    if (!response.ok) throw new Error("Failed to fetch user");
+    const data = await response.json();
+    setUsername(data.username);
   }
 
   async function deleteOffer(id) {
     if (!window.confirm("Delete this offer?")) return;
 
-    try {
-      const response = await fetch(`${API_URL}${id}/`, {
-        method: "DELETE",
-        headers: AUTH_HEADER,
-      });
+    const response = await fetch(`${API_URL}${id}/`, {
+      method: "DELETE",
+      headers: AUTH_HEADER,
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to delete offer");
-      }
-
-      fetchOffers();
-    } catch (err) {
-      alert(err.message);
+    if (!response.ok) {
+      alert("Failed to delete offer");
+      return;
     }
+
+    fetchOffers();
   }
 
+  // 🔥 fetch everything ONCE
   useEffect(() => {
-    fetchOffers();
+    async function init() {
+      try {
+        await Promise.all([fetchOffers(), fetchCurrentUser()]);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    init();
   }, []);
+
+  if (loading) return <p>Loading dashboard...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <div>
-      <h2>Offers Dashboard</h2>
+      {/* ✅ USERNAME */}
+      <h2>Cześć {username}</h2>
 
       <AddOffer onOfferCreated={fetchOffers} />
 
-      {loading && <p>Loading offers...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {offers.map((offer) => (
+        <div
+          key={offer.id}
+          style={{
+            border: "1px solid #ddd",
+            padding: "12px",
+            marginBottom: "12px",
+            borderRadius: "6px",
+            position: "relative",
+          }}
+        >
+          <h3>{offer.title}</h3>
+          <p>{offer.description}</p>
 
-      {!loading &&
-        offers.map((offer) => (
-          <div
-            key={offer.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "12px",
-              marginBottom: "12px",
-              borderRadius: "6px",
-              position: "relative",
-            }}
-          >
-            <h3>{offer.title}</h3>
-            <p>{offer.description}</p>
+          <p>
+            <strong>Budget:</strong> ${Number(offer.budget).toFixed(2)}
+          </p>
 
-            <p>
-              <strong>Budget:</strong> ${Number(offer.budget).toFixed(2)}
-            </p>
+          <p>
+            <strong>Creator ID:</strong> {offer.creator}
+          </p>
 
-            <p>
-              <strong>Creator ID:</strong> {offer.creator}
-            </p>
+          <p>
+            <strong>Created:</strong>{" "}
+            {new Date(offer.timestamp).toLocaleString()}
+          </p>
 
-            <p>
-              <strong>Created:</strong>{" "}
-              {new Date(offer.timestamp).toLocaleString()}
-            </p>
-
-            {offer.creator === currentUserId && (
-              <button
-                onClick={() => deleteOffer(offer.id)}
-                style={{
-                  position: "absolute",
-                  top: 10,
-                  right: 10,
-                  border: "none",
-                  background: "transparent",
-                  color: "red",
-                  cursor: "pointer",
-                  fontSize: "14px",
-                }}
-                title="Delete offer"
-              >
-                ❌
-              </button>
-            )}
-          </div>
-        ))}
+          {offer.creator === currentUserId && (
+            <button
+              onClick={() => deleteOffer(offer.id)}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                border: "none",
+                background: "transparent",
+                color: "red",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+              title="Delete offer"
+            >
+              ❌
+            </button>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

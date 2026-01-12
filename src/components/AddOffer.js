@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./auth.css";
 
 const API_URL = "https://apihandly.ddns.net/offers/";
 const AUTH_HEADER = {
@@ -36,16 +37,14 @@ export default function AddOffer({ onOfferCreated }) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(JSON.stringify(errorData));
+        const err = await response.json();
+        throw new Error(JSON.stringify(err));
       }
 
       setTitle("");
       setDescription("");
       setBudget("");
-
       setSuccess(true);
-
       onOfferCreated?.();
     } catch (err) {
       setError(err.message);
@@ -55,43 +54,42 @@ export default function AddOffer({ onOfferCreated }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "24px" }}>
-      <h3>Add Offer</h3>
+    <div className="auth-form">
+      <form className="group" onSubmit={handleSubmit}>
+        <div className="title">Add Offer</div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>Offer added successfully!</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {success && <p style={{ color: "green" }}>Offer added successfully</p>}
 
-      <input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
+        <input
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
 
-      <br />
+        <textarea
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+          style={{ resize: "vertical", minHeight: "80px" }}
+        />
 
-      <textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-      />
+        <input
+          type="number"
+          placeholder="Budget"
+          value={budget}
+          onChange={(e) => setBudget(e.target.value)}
+          required
+        />
 
-      <br />
-
-      <input
-        type="number"
-        placeholder="Budget"
-        value={budget}
-        onChange={(e) => setBudget(e.target.value)}
-        required
-      />
-
-      <br />
-
-      <button type="submit" disabled={submitting}>
-        {submitting ? "Adding..." : "Add Offer"}
-      </button>
-    </form>
+        <input
+          type="submit"
+          value={submitting ? "Adding..." : "Add Offer"}
+          disabled={submitting}
+        />
+      </form>
+    </div>
   );
 }
