@@ -1,60 +1,65 @@
 import { useState } from "react";
 
+const API_URL = "https://apihandly.ddns.net/offers/";
+const AUTH_HEADER = {
+  Authorization: "Basic " + btoa("admin:admin"),
+};
+
 export default function AddOffer({ onOfferCreated }) {
-  async function createOffer(offer) {
-    const response = await fetch("https://apihandly.ddns.net/offers/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Basic " + btoa("admin:admin"),
-      },
-      body: JSON.stringify({
-        title: offer.title,
-        description: offer.description,
-        budget: offer.budget,
-        creator: 1,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(JSON.stringify(errorData));
-    }
-
-    return response.json();
-  }
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [budget, setBudget] = useState("");
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setError(null);
+    setSuccess(false);
 
     try {
-      const newOffer = await createOffer({
-        title,
-        description,
-        budget,
+      setSubmitting(true);
+
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...AUTH_HEADER,
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          budget,
+          creator: 1,
+        }),
       });
 
-      setTitle("");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(JSON.stringify(errorData));
+      }
 
+      setTitle("");
       setDescription("");
       setBudget("");
 
-      onOfferCreated?.(newOffer);
+      setSuccess(true);
+
+      onOfferCreated?.();
     } catch (err) {
       setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: "20px" }}>
-      <h3>Dodaj ofertę</h3>
+    <form onSubmit={handleSubmit} style={{ marginBottom: "24px" }}>
+      <h3>Add Offer</h3>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>Offer added successfully!</p>}
 
       <input
         placeholder="Title"
@@ -84,7 +89,9 @@ export default function AddOffer({ onOfferCreated }) {
 
       <br />
 
-      <button type="submit">Dodaj ofertę</button>
+      <button type="submit" disabled={submitting}>
+        {submitting ? "Adding..." : "Add Offer"}
+      </button>
     </form>
   );
 }
