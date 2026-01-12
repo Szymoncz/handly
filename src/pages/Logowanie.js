@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./logowanie.css";
+import "../components/logowanie.css";
 
 export default function Logowanie() {
   const login = "admin";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./logowanie.css";
+import "../components/logowanie.css";
 
 const API_URL = "https://apihandly.ddns.net/offers/";
 const AUTH_HEADER = {
