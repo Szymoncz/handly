@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../components/AuthContext";
 import "../components/logowanie.css";
 
 export default function Logowanie() {
