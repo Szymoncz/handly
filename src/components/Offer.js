@@ -43,7 +43,7 @@ export default function Offers({
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p>Loading offers...</p>;
+  if (loading) return <p>Ładowanie ofert...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
