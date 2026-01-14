@@ -1,11 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "../src/components/AuthContext";
-
-import Home from "./Home";
-import Logowanie from "./Logowanie";
-import Rejestracja from "./Rejestracja";
-import Zalogowany from "./Zalogowany";
-import Footer from "./Footer";
+import { AuthProvider, useAuth } from "./components/AuthContext";
+import Home from "./pages/Home";
+import Logowanie from "./pages/Logowanie";
+import Rejestracja from "./pages/Rejestracja";
+import Zalogowany from "./pages/Zalogowany";
+import Footer from "./components/Footer";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
