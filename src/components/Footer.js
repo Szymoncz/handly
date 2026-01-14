@@ -1,7 +1,7 @@
 import React from "react";
-import Account from "/src/assets/Account icon.png";
-import Home from "/src/assets/Home icon.png";
-import Main from "/src/assets/Main icon.png";
+import Account from "./src/assets/Account icon.png";
+import Home from "./src/assets/Home icon.png";
+import Main from "./src/assets/Main icon.png";
 
 const Footer = () => {
   return (
