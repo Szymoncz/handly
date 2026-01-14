@@ -32,18 +32,10 @@ body {
 }
 
 .page-content {
-  flex: 1; /* THIS makes footer sticky */
+  flex: 1;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
   padding: 20px;
   margin-top: 30px;
-}
-
-.footer-wrapper {
-  margin-top: auto; /* pushes footer to bottom */
-  background-color: #fff;
-  border-top: 1px solid #ccc;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
-  border-radius: 12px 12px 0 0;
 }

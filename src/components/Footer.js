@@ -21,7 +21,7 @@ const footerStyle = {
   left: 0,
   width: "100%",
   backgroundColor: "#ffffff",
-  borderTop: "1px solid #eaeaea",
+
   padding: "15px 0",
   zIndex: 1000,
 };

@@ -23,9 +23,7 @@ function App() {
         </Routes>
       </main>
 
-      <footer className="container footer-wrapper">
-        <Footer />
-      </footer>
+      <Footer />
     </div>
   );
 }
