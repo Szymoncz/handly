@@ -1,5 +1,10 @@
-import React from "react";
+import Offer from "../components/Offer";
 
 export default function Home() {
-  return <h1>Strona główna</h1>;
+  return (
+    <>
+      <h1>Witamy w Handly</h1>
+      <Offer />
+    </>
+  );
 }
