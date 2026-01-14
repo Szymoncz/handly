@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 export default function Home() {
   return (
     <>
-      <h1>Witamy w Handly</h1>
       <div style={{ textAlign: "center", marginTop: "40vh" }}>
         <h1>Witamy w Handly</h1>
 
