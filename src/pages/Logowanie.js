@@ -25,35 +25,43 @@ export default function Logowanie() {
 
   return (
     <>
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <div className="group">
-          <p className="title">Zaloguj się!</p>
+      <div class="app">
+        <div class="container">
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <div className="group">
+              <p className="title">Zaloguj się!</p>
 
-          <label>Login</label>
-          <input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+              <label>Login</label>
+              <input
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
 
-          <label>Hasło</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+              <label>Hasło</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
 
-          {error && <div className="error">{error}</div>}
+              {error && <div className="error">{error}</div>}
 
-          <input type="submit" value="Zaloguj się do panelu" />
+              <input
+                type="submit"
+                class="register-button"
+                value="Zaloguj się do panelu"
+              />
+            </div>
+          </form>
+
+          <p className="auth-footer-text">Nie masz konta?</p>
+          <Link to="/rejestracja">
+            <button className="auth-secondary-btn">Rejestracja</button>
+          </Link>
         </div>
-      </form>
-
-      <p className="auth-footer-text">Nie masz konta?</p>
-      <Link to="/rejestracja">
-        <button className="auth-secondary-btn">Rejestracja</button>
-      </Link>
+      </div>
     </>
   );
 }

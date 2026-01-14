@@ -64,43 +64,49 @@ export default function Rejestracja() {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
-      <div className="group">
-        <p className="title">Rejestracja</p>
+    <>
+      <div class="app">
+        <div class="container">
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <div className="group">
+              <p className="title">Rejestracja</p>
 
-        <input
-          type="text"
-          name="username"
-          placeholder="Nazwa użytkownika"
-          value={formData.username}
-          onChange={handleChange}
-          required
-        />
+              <input
+                type="text"
+                name="username"
+                placeholder="Nazwa użytkownika"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Hasło"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
+              <input
+                type="password"
+                name="password"
+                placeholder="Hasło"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
 
-        {error && <div className="error">{error}</div>}
+              {error && <div className="error">{error}</div>}
 
-        <button class="register-button" type="submit">
-          Zarejestruj się
-        </button>
+              <button class="register-button" type="submit">
+                Zarejestruj się
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
+    </>
   );
 }
