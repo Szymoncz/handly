@@ -10,20 +10,22 @@ import Dashboard from "./pages/Dashboard";
 function App() {
   return (
     <div className="app">
-      <header className="container">
-        <Menu />
-      </header>
+      <div className="container">
+        <header className="header-container">
+          <Menu />
+        </header>
 
-      <main className="container page-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/logowanie/" element={<Logowanie />} />
-          <Route path="/rejestracja/" element={<Rejestracja />} />
-          <Route path="/dashboard/" element={<Dashboard />} />
-        </Routes>
-      </main>
+        <main className="container page-content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/logowanie/" element={<Logowanie />} />
+            <Route path="/rejestracja/" element={<Rejestracja />} />
+            <Route path="/dashboard/" element={<Dashboard />} />
+          </Routes>
+        </main>
 
-      <Footer />
+        <Footer />
+      </div>
     </div>
   );
 }
