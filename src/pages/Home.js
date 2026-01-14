@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <div class="app">
-        <div class="contianer">
+        <div class="container">
           <h1>Witamy w Handly</h1>
 
           <Link to="/logowanie">
