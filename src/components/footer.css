@@ -1,5 +1,7 @@
 footer {
-  border-top: 1px solid #000;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: black;
   position: sticky;
   bottom: 0px;
   left: 0px;
