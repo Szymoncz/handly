@@ -14,7 +14,7 @@ export default function Logowanie() {
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Request failed: " + response.status);
+        throw new Error("Wystąpił błąd: " + response.status);
       }
       return response.json();
     })

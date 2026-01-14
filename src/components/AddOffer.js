@@ -56,20 +56,20 @@ export default function AddOffer({ onOfferCreated }) {
   return (
     <div className="auth-form">
       <form className="group" onSubmit={handleSubmit}>
-        <div className="title">Add Offer</div>
+        <div className="title">Dodaj ofertę</div>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
-        {success && <p style={{ color: "green" }}>Offer added successfully</p>}
+        {success && <p style={{ color: "green" }}>Udało się - oferta dodana</p>}
 
         <input
-          placeholder="Title"
+          placeholder="Tytuł"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
 
         <textarea
-          placeholder="Description"
+          placeholder="Opis"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
@@ -78,7 +78,7 @@ export default function AddOffer({ onOfferCreated }) {
 
         <input
           type="number"
-          placeholder="Budget"
+          placeholder="Budżet"
           value={budget}
           onChange={(e) => setBudget(e.target.value)}
           required
@@ -86,7 +86,7 @@ export default function AddOffer({ onOfferCreated }) {
 
         <input
           type="submit"
-          value={submitting ? "Adding..." : "Add Offer"}
+          value={submitting ? "Dodawanie..." : "Dodaj ofertę"}
           disabled={submitting}
         />
       </form>

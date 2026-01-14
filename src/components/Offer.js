@@ -22,7 +22,7 @@ export default function Offers({
   }
 
   async function deleteOffer(id) {
-    if (!window.confirm("Delete this offer?")) return;
+    if (!window.confirm("Jesteś pewien, że chcesz usunąć?")) return;
 
     const response = await fetch(`${API_URL}${id}/`, {
       method: "DELETE",
@@ -30,7 +30,7 @@ export default function Offers({
     });
 
     if (!response.ok) {
-      alert("Failed to delete offer");
+      alert("Błąd - nie udało się usunąć oferty");
       return;
     }
 
@@ -48,7 +48,6 @@ export default function Offers({
 
   return (
     <div>
-      {/* ✅ ADD OFFER ONLY IF ENABLED */}
       {showAdd && <AddOffer onOfferCreated={fetchOffers} />}
 
       {offers.map((offer) => {
@@ -70,15 +69,14 @@ export default function Offers({
             <p>{offer.description}</p>
 
             <p>
-              <strong>Budget:</strong> ${Number(offer.budget).toFixed(2)}
+              <strong>Budżet:</strong> ${Number(offer.budget).toFixed(2)}
             </p>
 
             <p>
-              <strong>Created:</strong>{" "}
+              <strong>Stworzona:</strong>{" "}
               {new Date(offer.timestamp).toLocaleString()}
             </p>
 
-            {/* ✅ DELETE ONLY IN DASHBOARD & ONLY OWN OFFERS */}
             {isMyOffer && (
               <button
                 onClick={() => deleteOffer(offer.id)}
