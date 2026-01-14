@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import AddOffer from "./AddOffer";
 
 const API_URL = "https://apihandly.ddns.net/offers/";
-const API_ME = "https://apihandly.ddns.net/users/me/";
 const AUTH_HEADER = {
   Authorization: "Basic " + btoa("admin:admin"),
 };
 
 export default function Offers() {
   const [offers, setOffers] = useState([]);
-  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -19,13 +17,6 @@ export default function Offers() {
     const response = await fetch(API_URL, { headers: AUTH_HEADER });
     const data = await response.json();
     setOffers(data.results);
-  }
-
-  async function fetchCurrentUser() {
-    const response = await fetch(API_ME, { headers: AUTH_HEADER });
-    if (!response.ok) throw new Error("Failed to fetch user");
-    const data = await response.json();
-    setUsername(data.username);
   }
 
   async function deleteOffer(id) {
@@ -44,11 +35,10 @@ export default function Offers() {
     fetchOffers();
   }
 
-  // 🔥 fetch everything ONCE
   useEffect(() => {
     async function init() {
       try {
-        await Promise.all([fetchOffers(), fetchCurrentUser()]);
+        await fetchOffers();
       } catch (err) {
         setError(err.message);
       } finally {
@@ -63,9 +53,6 @@ export default function Offers() {
 
   return (
     <div>
-      {/* ✅ USERNAME */}
-      <h2>Cześć {username}</h2>
-
       <AddOffer onOfferCreated={fetchOffers} />
 
       {offers.map((offer) => (
