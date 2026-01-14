@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import AddOffer from "./AddOffer";
+import placeholder from "../assets/offer-placeholder.png";
 
 const API_URL = "https://apihandly.ddns.net/offers/";
 const AUTH_HEADER = {
   Authorization: "Basic " + btoa("admin:admin"),
 };
 
+function getImageUrl(image) {
+  if (!image) return placeholder;
+  if (image.startsWith("http")) return image;
+  return `https://apihandly.ddns.net${image}`;
+}
 export default function Offers({
   showAdd = false,
   showDelete = false,
@@ -65,6 +71,18 @@ export default function Offers({
               position: "relative",
             }}
           >
+            <img
+              src={getImageUrl(offer.image)}
+              alt={offer.title}
+              onError={(e) => (e.target.src = placeholder)}
+              style={{
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "6px",
+                marginBottom: "8px",
+              }}
+            />
             <h3>{offer.title}</h3>
             <p>{offer.description}</p>
 

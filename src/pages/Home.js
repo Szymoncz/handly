@@ -8,11 +8,11 @@ export default function Home() {
           <h1>Witamy w Handly</h1>
 
           <Link to="/logowanie">
-            <button>Zaloguj</button>
+            <button class="register-button">Zaloguj</button>
           </Link>
 
           <Link to="/rejestracja">
-            <button style={{ marginLeft: "12px" }}>Rejestracja</button>
+            <button class="register-button">Rejestracja</button>
           </Link>
         </div>
       </div>

@@ -10,6 +10,8 @@ export default function AddOffer({ onOfferCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [budget, setBudget] = useState("");
+  const [image, setImage] = useState(null);
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -22,18 +24,22 @@ export default function AddOffer({ onOfferCreated }) {
     try {
       setSubmitting(true);
 
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("budget", budget);
+      formData.append("creator", 1);
+
+      if (image) {
+        formData.append("image", image);
+      }
+
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           ...AUTH_HEADER,
         },
-        body: JSON.stringify({
-          title,
-          description,
-          budget,
-          creator: 1,
-        }),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -44,6 +50,7 @@ export default function AddOffer({ onOfferCreated }) {
       setTitle("");
       setDescription("");
       setBudget("");
+      setImage(null);
       setSuccess(true);
       onOfferCreated?.();
     } catch (err) {
@@ -83,6 +90,42 @@ export default function AddOffer({ onOfferCreated }) {
           onChange={(e) => setBudget(e.target.value)}
           required
         />
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+        />
+
+        <div style={{ marginTop: "8px" }}>
+          {image ? (
+            <img
+              src={URL.createObjectURL(image)}
+              alt="preview"
+              style={{
+                width: "100%",
+                maxHeight: "150px",
+                objectFit: "cover",
+                borderRadius: "6px",
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                height: "150px",
+                background: "#f0f0f0",
+                borderRadius: "6px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#888",
+                fontSize: "14px",
+              }}
+            >
+              Brak zdjęcia (opcjonalne)
+            </div>
+          )}
+        </div>
 
         <input
           type="submit"
