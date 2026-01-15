@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddOffer() {
+export default function AnnouncementForm() {
   const [formData, setFormData] = useState({
     title: "",
     province: "",
@@ -44,6 +44,8 @@ export default function AddOffer() {
           display: flex;
           flex-direction: column;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          max-width: 576px;
+          margin: 0 auto;
         }
 
         .logo-section {
@@ -137,13 +139,17 @@ export default function AddOffer() {
           top: 50%;
           transform: translateY(-50%);
           color: #9ca3af;
+          font-size: 18px;
+          pointer-events: none;
         }
 
         .footer {
           position: fixed;
           bottom: 0;
-          left: 0;
-          right: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          max-width: 576px;
+          width: 100%;
           background-color: white;
           border-top: 1px solid #e5e7eb;
           padding: 16px;
