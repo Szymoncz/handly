@@ -7,6 +7,7 @@ import Rejestracja from "./pages/Rejestracja";
 import Zalogowany from "./pages/Zalogowany";
 import Footer from "./components/Footer";
 import AddOffer from "./components/AddOffer";
+import OfferDetail from "./components/OfferDetail";
 import "./App.css";
 
 function ProtectedRoute({ children }) {
@@ -20,7 +21,8 @@ function ProtectedRoute({ children }) {
 function Layout({ children }) {
   const { user } = useAuth();
   const location = useLocation();
-  const hideFooter = location.pathname === "/add";
+  const hideFooter =
+    location.pathname === "/add" || location.pathname.startsWith("/offer/");
 
   return (
     <>
@@ -39,6 +41,7 @@ export default function App() {
           <Route path="/logowanie" element={<Logowanie />} />
           <Route path="/rejestracja" element={<Rejestracja />} />
           <Route path="/add" element={<AddOffer />} />
+          <Route path="/offer/:id" element={<OfferDetail />} />
 
           <Route
             path="/dashboard"
