@@ -1,11 +1,9 @@
-import Offer from "../components/Offer";
-import Footer from "../components/Footer";
+import OffersList from "../components/OffersList";
 
 export default function Dashboard() {
   return (
     <>
-      <Offer showAdd={true} showDelete={true} currentUserId={1} />
-      <Footer />
+      <OffersList />
     </>
   );
 }
