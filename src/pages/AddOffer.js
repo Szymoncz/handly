@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AnnouncementForm() {
+export default function AddOffer() {
   const [formData, setFormData] = useState({
     title: "",
     province: "",
