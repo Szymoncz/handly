@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function OffersList() {
+export default function OfferList() {
   const navigate = useNavigate();
 
   // Sample offers data - replace with actual data from API
