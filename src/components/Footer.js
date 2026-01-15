@@ -8,12 +8,14 @@ import "../components/footer.css";
 const Footer = () => {
   return (
     <footer>
-      <div className="footer-container">
-        <img src={Home} alt="Home" className="footer-icon" />
-        <Link to="/add-offer">
-          <img src={Main} alt="Dodaj ogłoszenie" className="footer-icon" />
-        </Link>
-        <img src={Account} alt="Konto" className="footer-icon" />
+      <div className="footer-main">
+        <div className="footer-container">
+          <img src={Home} alt="Home" className="footer-icon" />
+          <Link to="/add-offer">
+            <img src={Main} alt="Dodaj ogłoszenie" className="footer-icon" />
+          </Link>
+          <img src={Account} alt="Konto" className="footer-icon" />
+        </div>
       </div>
     </footer>
   );
