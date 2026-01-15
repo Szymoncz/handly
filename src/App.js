@@ -6,7 +6,7 @@ import Logowanie from "./pages/Logowanie";
 import Rejestracja from "./pages/Rejestracja";
 import Zalogowany from "./pages/Zalogowany";
 import Footer from "./components/Footer";
-import AddOffer from "./pages/AddOffer";
+import AddOffer from "./components/AddOffer";
 import "./App.css";
 
 function ProtectedRoute({ children }) {
