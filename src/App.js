@@ -6,6 +6,7 @@ import Logowanie from "./pages/Logowanie";
 import Rejestracja from "./pages/Rejestracja";
 import Zalogowany from "./pages/Zalogowany";
 import Footer from "./components/Footer";
+import AddOffer from "./pages/AddOffer";
 import "./App.css";
 
 function ProtectedRoute({ children }) {
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/logowanie" element={<Logowanie />} />
           <Route path="/rejestracja" element={<Rejestracja />} />
+          <Route path="/add" element={<AddOffer />} />
 
           <Route
             path="/dashboard"
