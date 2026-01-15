@@ -3,7 +3,6 @@ import Account from "../assets/Account icon.png";
 import Home from "../assets/Home icon.png";
 import Main from "../assets/Main icon.png";
 import "../components/footer.css";
-import "../pages/AddOffer";
 //import { useAuth } from "../components/AuthContext";
 
 const Footer = () => {
