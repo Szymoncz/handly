@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/handly/static/css/main.fc031cbd.css",
-    "main.js": "/handly/static/js/main.9a11ebf7.js",
+    "main.js": "/handly/static/js/main.453891f6.js",
     "static/media/offer-placeholder.png": "/handly/static/media/offer-placeholder.c9f133b1913424062e4a.png",
     "index.html": "/handly/index.html",
     "main.fc031cbd.css.map": "/handly/static/css/main.fc031cbd.css.map",
-    "main.9a11ebf7.js.map": "/handly/static/js/main.9a11ebf7.js.map"
+    "main.453891f6.js.map": "/handly/static/js/main.453891f6.js.map"
   },
   "entrypoints": [
     "static/css/main.fc031cbd.css",
-    "static/js/main.9a11ebf7.js"
+    "static/js/main.453891f6.js"
   ]
 }
