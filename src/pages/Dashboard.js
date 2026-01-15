@@ -1,9 +1,9 @@
-import OffersList from "../components/OffersList";
+import OfferList from "../components/OfferList";
 
 export default function Dashboard() {
   return (
     <>
-      <OffersList />
+      <OfferList />
     </>
   );
 }
