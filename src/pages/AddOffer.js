@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ChevronRight, ChevronLeft } from "lucide-react";
 
 export default function AnnouncementForm() {
   const [formData, setFormData] = useState({
@@ -286,7 +285,7 @@ export default function AnnouncementForm() {
                   placeholder="Wyszukaj..."
                   className="input"
                 />
-                <ChevronRight className="input-icon" size={20} />
+                <span className="input-icon">›</span>
               </div>
             </div>
           </div>
@@ -302,7 +301,7 @@ export default function AnnouncementForm() {
                 placeholder="Dodaj zdjęcia (pierwsze będzie okładką)"
                 className="input"
               />
-              <ChevronRight className="input-icon" size={20} />
+              <span className="input-icon">›</span>
             </div>
           </div>
         </div>
@@ -310,12 +309,12 @@ export default function AnnouncementForm() {
         <div className="footer">
           <div className="footer-content">
             <button onClick={handleBack} className="btn-back">
-              <ChevronLeft size={20} />
+              <span>‹</span>
               <span>Powrót</span>
             </button>
             <button onClick={handleSubmit} className="btn-submit">
               <span>Dodaj robotę</span>
-              <ChevronRight size={20} />
+              <span>›</span>
             </button>
           </div>
         </div>
