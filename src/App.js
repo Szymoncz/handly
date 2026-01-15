@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./components/AuthContext";
+import { DEV_BYPASS_AUTH } from "./config";
 import Home from "./pages/Home";
 import Logowanie from "./pages/Logowanie";
 import Rejestracja from "./pages/Rejestracja";
@@ -9,6 +10,9 @@ import "./App.css";
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
+
+  if (DEV_BYPASS_AUTH) return children;
+
   return user ? children : <Navigate to="/" replace />;
 }
 
