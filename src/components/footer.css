@@ -3,7 +3,8 @@ footer {
   bottom: 0px;
   left: 0px;
   width: 100%;
-
+  display: flex;
+  justify-content: center;
   z-index: 1000;
 }
 
@@ -18,7 +19,7 @@ footer {
   background-color: rgb(255, 255, 255);
   padding: 15px 0px;
   z-index: 1000;
-  max-width: 768px;
+  max-width: 576px;
 }
 
 .footer-container {
