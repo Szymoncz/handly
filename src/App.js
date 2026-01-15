@@ -8,7 +8,7 @@ import Zalogowany from "./pages/Zalogowany";
 import Footer from "./components/Footer";
 import AddOffer from "./components/AddOffer";
 import OfferDetail from "./components/OfferDetail";
-import OffersList from "./components/OffersList";
+import OfferList from "./components/OfferList";
 import "./App.css";
 
 function ProtectedRoute({ children }) {
@@ -41,7 +41,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/logowanie" element={<Logowanie />} />
           <Route path="/rejestracja" element={<Rejestracja />} />
-          <Route path="/offers" element={<OffersList />} />
+          <Route path="/offers" element={<OfferList />} />
           <Route path="/add" element={<AddOffer />} />
           <Route path="/offer/:id" element={<OfferDetail />} />
 
