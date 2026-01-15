@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./components/AuthContext";
 import { DEV_BYPASS_AUTH } from "./config";
 import Home from "./pages/Home";
@@ -19,11 +19,13 @@ function ProtectedRoute({ children }) {
 
 function Layout({ children }) {
   const { user } = useAuth();
+  const location = useLocation();
+  const hideFooter = location.pathname === "/add";
 
   return (
     <>
       {children}
-      {user && <Footer />}
+      {user && !hideFooter && <Footer />}
     </>
   );
 }
