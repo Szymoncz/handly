@@ -78,7 +78,7 @@ export default function AddOffer() {
         }
 
         body {
-          background: white;
+          background: #e9f0f4;
         }
 
         .container {
