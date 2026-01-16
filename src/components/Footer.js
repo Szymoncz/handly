@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import Account from "../assets/Account icon.png";
 import Home from "../assets/Home icon.png";
 import Main from "../assets/Main icon.png";
@@ -6,6 +7,14 @@ import "../components/footer.css";
 
 const Footer = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    if (window.confirm("Czy na pewno chcesz się wylogować?")) {
+      await logout();
+      navigate("/", { state: { message: "Zostałeś wylogowany" } });
+    }
+  };
 
   return (
     <footer>
@@ -29,8 +38,9 @@ const Footer = () => {
             src={Account}
             alt="Konto"
             className="footer-icon"
-            onClick={() => navigate("/dashboard")}
+            onClick={handleLogout}
             style={{ cursor: "pointer" }}
+            title="Wyloguj się"
           />
         </div>
       </div>

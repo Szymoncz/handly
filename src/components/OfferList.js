@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const API_BASE = "https://apihandly.ddns.net";
 
 export default function OfferList() {
   const navigate = useNavigate();
+  const { logout, user } = useAuth();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,6 +38,13 @@ export default function OfferList() {
       setLoading(false);
     }
   }
+
+  const handleLogout = async () => {
+    if (window.confirm("Czy na pewno chcesz się wylogować?")) {
+      await logout();
+      navigate("/", { state: { message: "Zostałeś wylogowany" } });
+    }
+  };
 
   if (loading) {
     return (
@@ -75,6 +84,35 @@ export default function OfferList() {
           border-bottom: 3px solid #3b82f6;
           font-size: 18px;
           font-weight: bold;
+          position: relative;
+        }
+
+        .logout-btn-header {
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          background-color: #ef4444;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: background-color 0.2s;
+        }
+
+        .logout-btn-header:hover {
+          background-color: #dc2626;
+        }
+
+        .user-info {
+          position: absolute;
+          left: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 14px;
+          color: #6b7280;
         }
 
         .offers-section {
@@ -188,7 +226,13 @@ export default function OfferList() {
       `}</style>
 
       <div className="offers-container">
-        <div className="logo-header-list">LOGO TUTAJ</div>
+        <div className="logo-header-list">
+          {user && <span className="user-info">{user.username}</span>}
+          LOGO TUTAJ
+          <button className="logout-btn-header" onClick={handleLogout}>
+            Wyloguj
+          </button>
+        </div>
 
         <div className="offers-section">
           <h2 className="section-title">Twoje ogłoszenia</h2>

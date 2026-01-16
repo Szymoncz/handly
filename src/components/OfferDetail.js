@@ -8,10 +8,9 @@ export default function OfferDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [deleting, setDeleting] = useState(false);
+  const [creatorInfo, setCreatorInfo] = useState(null);
 
   useEffect(() => {
     fetchOffer();
@@ -26,10 +25,19 @@ export default function OfferDetail() {
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Failed to fetch offer");
+      if (!response.ok) {
+        throw new Error("Failed to fetch offer");
+      }
 
       const data = await response.json();
+      console.log("Fetched offer:", data);
+      console.log("Current user:", user);
       setOffer(data);
+
+      // Fetch creator info
+      if (data.creator) {
+        fetchCreatorInfo(data.creator);
+      }
     } catch (err) {
       console.error("Error fetching offer:", err);
     } finally {
@@ -37,10 +45,26 @@ export default function OfferDetail() {
     }
   }
 
+  async function fetchCreatorInfo(creatorId) {
+    try {
+      const response = await fetch(`${API_BASE}/users/${creatorId}/`, {
+        headers: {
+          Authorization: "Basic " + btoa("admin:admin"),
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCreatorInfo(data);
+      }
+    } catch (err) {
+      console.error("Error fetching creator info:", err);
+    }
+  }
+
   async function handleDelete() {
     if (!window.confirm("Czy na pewno chcesz usunąć tę ofertę?")) return;
-
-    setDeleting(true);
 
     try {
       const response = await fetch(`${API_BASE}/offers/${id}/`, {
@@ -51,25 +75,20 @@ export default function OfferDetail() {
         credentials: "include",
       });
 
-      if (response.ok) {
-        alert("Oferta została usunięta pomyślnie");
-        navigate("/dashboard"); // or navigate(-1) to go back
+      if (response.ok || response.status === 204) {
+        alert("Oferta została usunięta");
+        navigate("/dashboard");
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        alert(
-          errorData.detail || "Nie udało się usunąć oferty – spróbuj ponownie"
-        );
+        alert("Błąd podczas usuwania oferty");
       }
     } catch (err) {
       console.error("Error deleting offer:", err);
       alert("Błąd połączenia z serwerem");
-    } finally {
-      setDeleting(false);
     }
   }
 
   const handleBack = () => {
-    navigate("/dashboard"); // or navigate(-1)
+    navigate("/dashboard");
   };
 
   if (loading) {
@@ -86,7 +105,13 @@ export default function OfferDetail() {
     );
   }
 
-  const isMyOffer = user && offer.creator == user.id;
+  // Check if current user is the creator of this offer
+  const isMyOffer =
+    user && (offer.creator === user.id || offer.creator === user.url);
+  console.log("Is my offer?", isMyOffer);
+  console.log("Offer creator:", offer.creator);
+  console.log("User ID:", user?.id);
+  console.log("User:", user);
 
   return (
     <>
@@ -152,7 +177,7 @@ export default function OfferDetail() {
 
         .content-section {
           flex: 1;
-          padding: 0 16px 96px 16px; /* more space for footer */
+          padding: 0 16px 80px 16px;
         }
 
         .meta-row {
@@ -172,25 +197,18 @@ export default function OfferDetail() {
           display: flex;
           align-items: center;
           gap: 6px;
-          background: #fee2e2;
-          color: #ef4444;
-          border: 1px solid #fecaca;
-          border-radius: 6px;
-          padding: 8px 14px;
-          font-size: 14px;
-          font-weight: 500;
+          background-color: #ef4444;
+          border: none;
+          color: white;
           cursor: pointer;
-          transition: all 0.2s;
+          font-size: 14px;
+          padding: 8px 16px;
+          border-radius: 6px;
+          transition: background-color 0.2s;
         }
 
-        .delete-btn:hover:not(:disabled) {
-          background: #fecaca;
-          border-color: #f87171;
-        }
-
-        .delete-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
+        .delete-btn:hover {
+          background-color: #dc2626;
         }
 
         .offer-title {
@@ -200,15 +218,21 @@ export default function OfferDetail() {
           line-height: 1.4;
         }
 
-        .category-row {
+        .info-row {
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 12px 0;
+          border-bottom: 1px dotted #d1d5db;
         }
 
-        .category {
+        .info-label {
           color: #6b7280;
+          font-size: 14px;
+        }
+
+        .info-value {
+          font-weight: 600;
           font-size: 14px;
         }
 
@@ -219,13 +243,20 @@ export default function OfferDetail() {
           line-height: 1.6;
         }
 
+        .description-title {
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 12px;
+          color: #1f2937;
+        }
+
         .footer-detail {
           position: fixed;
           bottom: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 100%;
           max-width: 576px;
+          width: 100%;
           background-color: white;
           border-top: 1px solid #e5e7eb;
           padding: 16px;
@@ -271,28 +302,40 @@ export default function OfferDetail() {
             <span className="days-ago">
               Dodano: {new Date(offer.timestamp).toLocaleDateString("pl-PL")}
             </span>
-
             {isMyOffer && (
-              <button
-                className="delete-btn"
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? "Usuwanie..." : "🗑️ Usuń"}
+              <button className="delete-btn" onClick={handleDelete}>
+                🗑️ Usuń
               </button>
             )}
           </div>
 
           <h1 className="offer-title">{offer.title}</h1>
 
-          <div className="category-row">
-            <span className="category">Kategoria ogłoszenia</span>
-            <span style={{ fontWeight: 600 }}>
-              Budżet: {Number(offer.budget).toFixed(2)} zł
+          <div className="info-row">
+            <span className="info-label">Budżet:</span>
+            <span className="info-value">
+              {Number(offer.budget).toFixed(2)} zł
             </span>
           </div>
 
-          <div className="description">{offer.description}</div>
+          {creatorInfo && (
+            <div className="info-row">
+              <span className="info-label">Zleceniodawca:</span>
+              <span className="info-value">{creatorInfo.username}</span>
+            </div>
+          )}
+
+          <div className="info-row">
+            <span className="info-label">Data dodania:</span>
+            <span className="info-value">
+              {new Date(offer.timestamp).toLocaleString("pl-PL")}
+            </span>
+          </div>
+
+          <div style={{ marginTop: "24px" }}>
+            <div className="description-title">Opis:</div>
+            <div className="description">{offer.description}</div>
+          </div>
         </div>
 
         <div className="footer-detail">
