@@ -8,8 +8,10 @@ export default function OfferDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchOffer();
@@ -24,13 +26,9 @@ export default function OfferDetail() {
         credentials: "include",
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch offer");
-      }
+      if (!response.ok) throw new Error("Failed to fetch offer");
 
       const data = await response.json();
-      console.log("Fetched offer:", data);
-      console.log("Current user:", user);
       setOffer(data);
     } catch (err) {
       console.error("Error fetching offer:", err);
@@ -42,6 +40,8 @@ export default function OfferDetail() {
   async function handleDelete() {
     if (!window.confirm("Czy na pewno chcesz usunąć tę ofertę?")) return;
 
+    setDeleting(true);
+
     try {
       const response = await fetch(`${API_BASE}/offers/${id}/`, {
         method: "DELETE",
@@ -52,23 +52,24 @@ export default function OfferDetail() {
       });
 
       if (response.ok) {
-        alert("Oferta została usunięta");
-        navigate("/dashboard");
+        alert("Oferta została usunięta pomyślnie");
+        navigate("/dashboard"); // or navigate(-1) to go back
       } else {
-        alert("Błąd podczas usuwania oferty");
+        const errorData = await response.json().catch(() => ({}));
+        alert(
+          errorData.detail || "Nie udało się usunąć oferty – spróbuj ponownie"
+        );
       }
     } catch (err) {
       console.error("Error deleting offer:", err);
       alert("Błąd połączenia z serwerem");
+    } finally {
+      setDeleting(false);
     }
   }
 
   const handleBack = () => {
-    navigate("/dashboard");
-  };
-
-  const handleShare = () => {
-    console.log("Share offer");
+    navigate("/dashboard"); // or navigate(-1)
   };
 
   if (loading) {
@@ -86,14 +87,6 @@ export default function OfferDetail() {
   }
 
   const isMyOffer = user && offer.creator === user.id;
-  console.log(
-    "Is my offer?",
-    isMyOffer,
-    "offer.creator:",
-    offer.creator,
-    "user.id:",
-    user?.id
-  );
 
   return (
     <>
@@ -159,7 +152,7 @@ export default function OfferDetail() {
 
         .content-section {
           flex: 1;
-          padding: 0 16px 80px 16px;
+          padding: 0 16px 96px 16px; /* more space for footer */
         }
 
         .meta-row {
@@ -175,38 +168,29 @@ export default function OfferDetail() {
           font-size: 14px;
         }
 
-        .share-btn {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          background: none;
-          border: none;
-          color: #6b7280;
-          cursor: pointer;
-          font-size: 14px;
-          padding: 4px 8px;
-          transition: color 0.2s;
-        }
-
-        .share-btn:hover {
-          color: #1f2937;
-        }
-
         .delete-btn {
           display: flex;
           align-items: center;
           gap: 6px;
-          background: none;
-          border: none;
+          background: #fee2e2;
           color: #ef4444;
-          cursor: pointer;
+          border: 1px solid #fecaca;
+          border-radius: 6px;
+          padding: 8px 14px;
           font-size: 14px;
-          padding: 4px 8px;
-          transition: color 0.2s;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s;
         }
 
-        .delete-btn:hover {
-          color: #dc2626;
+        .delete-btn:hover:not(:disabled) {
+          background: #fecaca;
+          border-color: #f87171;
+        }
+
+        .delete-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .offer-title {
@@ -240,8 +224,8 @@ export default function OfferDetail() {
           bottom: 0;
           left: 50%;
           transform: translateX(-50%);
-          max-width: 576px;
           width: 100%;
+          max-width: 576px;
           background-color: white;
           border-top: 1px solid #e5e7eb;
           padding: 16px;
@@ -285,11 +269,16 @@ export default function OfferDetail() {
         <div className="content-section">
           <div className="meta-row">
             <span className="days-ago">
-              {new Date(offer.timestamp).toLocaleDateString("pl-PL")}
+              Dodano: {new Date(offer.timestamp).toLocaleDateString("pl-PL")}
             </span>
+
             {isMyOffer && (
-              <button className="delete-btn" onClick={handleDelete}>
-                🗑️ Usuń
+              <button
+                className="delete-btn"
+                onClick={handleDelete}
+                disabled={deleting}
+              >
+                {deleting ? "Usuwanie..." : "🗑️ Usuń"}
               </button>
             )}
           </div>
@@ -299,7 +288,7 @@ export default function OfferDetail() {
           <div className="category-row">
             <span className="category">Kategoria ogłoszenia</span>
             <span style={{ fontWeight: 600 }}>
-              Budżet: {Number(offer.budget).toFixed(2)}zł
+              Budżet: {Number(offer.budget).toFixed(2)} zł
             </span>
           </div>
 
