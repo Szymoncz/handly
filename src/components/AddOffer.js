@@ -10,13 +10,12 @@ export default function AddOffer() {
 
   const [formData, setFormData] = useState({
     title: "",
-    description: "",
-    budget: "",
-    // added for looks
     province: "",
     city: "",
     postalCode: "",
     address: "",
+    description: "",
+    budget: "",
     category: "",
     photos: "",
   });
@@ -30,7 +29,6 @@ export default function AddOffer() {
   };
 
   const handleSubmit = async () => {
-    // keep your original validation
     if (!formData.title || !formData.description || !formData.budget) {
       alert("Proszę wypełnić wszystkie pola");
       return;
@@ -49,7 +47,7 @@ export default function AddOffer() {
           description: formData.description,
           creator: user?.id || 1,
           budget: parseFloat(formData.budget) || 0,
-          // you can extend this payload later if you need the new fields
+          // you can later add: province, city, etc. if backend supports them
         }),
       });
 
@@ -57,11 +55,11 @@ export default function AddOffer() {
         navigate("/dashboard");
       } else {
         const error = await response.json();
-        console.error("Error response:", error);
-        alert("Błąd podczas dodawania oferty: " + JSON.stringify(error));
+        console.error("Error:", error);
+        alert("Błąd: " + JSON.stringify(error));
       }
     } catch (err) {
-      console.error("Error creating offer:", err);
+      console.error("Connection error:", err);
       alert("Błąd połączenia z serwerem");
     }
   };
@@ -78,141 +76,190 @@ export default function AddOffer() {
           padding: 0;
           box-sizing: border-box;
         }
+
+        body {
+          background: white;
+        }
+
         .container {
           min-height: 100vh;
           background-color: white;
           display: flex;
           flex-direction: column;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          max-width: 576px;
+          margin: 0 auto;
         }
+
         .logo-section {
           text-align: center;
           padding: 24px 0;
         }
+
         .logo {
           font-size: 24px;
           font-weight: bold;
         }
+
         .form-content {
           flex: 1;
-          padding: 0 16px 96px 16px;
+          padding: 0 16px 100px 16px;
         }
+
         .page-title {
           font-size: 20px;
           font-weight: 600;
           margin-bottom: 32px;
         }
+
         .form-group {
           margin-bottom: 24px;
         }
+
         .label {
           display: block;
           font-size: 16px;
           font-weight: 500;
           margin-bottom: 8px;
+          color: #1f2937;
         }
+
         .input {
           width: 100%;
           background-color: #f3f4f6;
           border: none;
           padding: 12px 16px;
           font-size: 14px;
+          border-radius: 6px;
           outline: none;
         }
+
         .input:focus {
           outline: 2px solid #d1d5db;
         }
+
         .input::placeholder {
           color: #9ca3af;
         }
+
         .textarea {
           width: 100%;
           background-color: #f3f4f6;
           border: none;
           padding: 12px 16px;
           font-size: 14px;
-          resize: none;
+          border-radius: 6px;
+          resize: vertical;
+          min-height: 120px;
           font-family: inherit;
           outline: none;
         }
+
         .textarea:focus {
           outline: 2px solid #d1d5db;
         }
+
         .textarea::placeholder {
           color: #9ca3af;
         }
+
         .grid-2 {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 16px;
         }
+
         .grid-2-mb {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 16px;
           margin-bottom: 16px;
         }
+
         .input-wrapper {
           position: relative;
         }
+
         .input-icon {
           position: absolute;
-          right: 12px;
+          right: 16px;
           top: 50%;
           transform: translateY(-50%);
           color: #9ca3af;
-          font-size: 18px;
+          font-size: 20px;
           pointer-events: none;
         }
+
         .footer {
           position: fixed;
           bottom: 0;
-          left: 0;
-          right: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          max-width: 576px;
           background-color: white;
           border-top: 1px solid #e5e7eb;
           padding: 16px;
+          z-index: 10;
         }
+
         .footer-content {
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
+
         .btn-back {
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
           background: none;
           border: none;
           color: #4b5563;
-          cursor: pointer;
           font-size: 16px;
-          padding: 8px 12px;
-          transition: color 0.2s;
+          font-weight: 500;
+          padding: 10px 14px;
+          cursor: pointer;
         }
+
         .btn-back:hover {
           color: #1f2937;
         }
+
         .btn-submit {
           display: flex;
           align-items: center;
-          gap: 4px;
-          background-color: #d1d5db;
+          gap: 8px;
+          background-color: #3b82f6;
+          color: white;
           border: none;
-          color: #1f2937;
-          cursor: pointer;
           font-size: 16px;
-          padding: 8px 24px;
+          font-weight: 500;
+          padding: 12px 24px;
+          border-radius: 8px;
+          cursor: pointer;
           transition: background-color 0.2s;
         }
+
         .btn-submit:hover {
-          background-color: #9ca3af;
+          background-color: #2563eb;
+        }
+
+        /* Make footer full-width on small screens */
+        @media (max-width: 600px) {
+          .footer {
+            left: 0;
+            transform: none;
+            max-width: 100%;
+          }
         }
       `}</style>
+
       <div className="container">
         <div className="logo-section">
           <div className="logo">LOGO</div>
         </div>
+
         <div className="form-content">
           <h1 className="page-title">Dodaj nowe ogłoszenie</h1>
 
@@ -327,12 +374,10 @@ export default function AddOffer() {
         <div className="footer">
           <div className="footer-content">
             <button onClick={handleBack} className="btn-back">
-              <span>‹</span>
-              <span>Powrót</span>
+              <span>‹</span> Powrót
             </button>
             <button onClick={handleSubmit} className="btn-submit">
-              <span>Dodaj robotę</span>
-              <span>›</span>
+              Dodaj robotę <span>›</span>
             </button>
           </div>
         </div>
