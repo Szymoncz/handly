@@ -30,13 +30,35 @@ export default function OfferDetail() {
       }
 
       const data = await response.json();
+      console.log("=== OFFER DETAIL DEBUG ===");
       console.log("Fetched offer:", data);
       console.log("Current user:", user);
+      console.log("Offer creator (raw):", data.creator);
+      console.log("User ID (raw):", user?.id);
+      console.log(
+        "Types - creator:",
+        typeof data.creator,
+        "user.id:",
+        typeof user?.id
+      );
+
       setOffer(data);
 
       // Fetch creator info
       if (data.creator) {
-        fetchCreatorInfo(data.creator);
+        // Extract ID from URL if creator is a URL
+        let creatorId = data.creator;
+        if (
+          typeof data.creator === "string" &&
+          data.creator.includes("/users/")
+        ) {
+          const match = data.creator.match(/\/users\/(\d+)\//);
+          if (match) {
+            creatorId = parseInt(match[1]);
+          }
+        }
+        console.log("Extracted creator ID:", creatorId);
+        fetchCreatorInfo(creatorId);
       }
     } catch (err) {
       console.error("Error fetching offer:", err);
@@ -56,6 +78,7 @@ export default function OfferDetail() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log("Creator info:", data);
         setCreatorInfo(data);
       }
     } catch (err) {
@@ -105,13 +128,37 @@ export default function OfferDetail() {
     );
   }
 
-  // Check if current user is the creator of this offer
-  const isMyOffer =
-    user && (offer.creator === user.id || offer.creator === user.url);
+  // Multiple ways to check if this is the user's offer
+  let isMyOffer = false;
+
+  if (user) {
+    // Check direct ID match
+    if (offer.creator === user.id) {
+      isMyOffer = true;
+    }
+
+    // Check if creator is a URL containing user ID
+    if (
+      typeof offer.creator === "string" &&
+      offer.creator.includes(`/users/${user.id}/`)
+    ) {
+      isMyOffer = true;
+    }
+
+    // Check if creator matches user URL
+    if (user.url && offer.creator === user.url) {
+      isMyOffer = true;
+    }
+
+    // Check with creatorInfo
+    if (creatorInfo && creatorInfo.id === user.id) {
+      isMyOffer = true;
+    }
+  }
+
+  console.log("=== OWNERSHIP CHECK ===");
   console.log("Is my offer?", isMyOffer);
-  console.log("Offer creator:", offer.creator);
-  console.log("User ID:", user?.id);
-  console.log("User:", user);
+  console.log("Delete button will show:", isMyOffer);
 
   return (
     <>
@@ -148,12 +195,6 @@ export default function OfferDetail() {
           display: flex;
           align-items: center;
           justify-content: center;
-        }
-
-        .main-image {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
         }
 
         .image-counter {
@@ -221,7 +262,7 @@ export default function OfferDetail() {
         .info-row {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
           padding: 12px 0;
           border-bottom: 1px dotted #d1d5db;
         }
@@ -229,18 +270,21 @@ export default function OfferDetail() {
         .info-label {
           color: #6b7280;
           font-size: 14px;
+          min-width: 140px;
         }
 
         .info-value {
-          font-weight: 600;
+          font-weight: 500;
           font-size: 14px;
+          text-align: right;
+          flex: 1;
         }
 
-        .description {
+        .description-section {
           margin-top: 24px;
-          color: #374151;
-          font-size: 15px;
-          line-height: 1.6;
+          padding: 16px;
+          background-color: #f9fafb;
+          border-radius: 8px;
         }
 
         .description-title {
@@ -248,6 +292,13 @@ export default function OfferDetail() {
           font-weight: 600;
           margin-bottom: 12px;
           color: #1f2937;
+        }
+
+        .description {
+          color: #374151;
+          font-size: 15px;
+          line-height: 1.6;
+          white-space: pre-wrap;
         }
 
         .footer-detail {
@@ -311,6 +362,13 @@ export default function OfferDetail() {
 
           <h1 className="offer-title">{offer.title}</h1>
 
+          {creatorInfo && (
+            <div className="info-row">
+              <span className="info-label">Zleceniodawca:</span>
+              <span className="info-value">{creatorInfo.username}</span>
+            </div>
+          )}
+
           <div className="info-row">
             <span className="info-label">Budżet:</span>
             <span className="info-value">
@@ -318,10 +376,38 @@ export default function OfferDetail() {
             </span>
           </div>
 
-          {creatorInfo && (
+          {offer.category && (
             <div className="info-row">
-              <span className="info-label">Zleceniodawca:</span>
-              <span className="info-value">{creatorInfo.username}</span>
+              <span className="info-label">Kategoria:</span>
+              <span className="info-value">{offer.category}</span>
+            </div>
+          )}
+
+          {offer.province && (
+            <div className="info-row">
+              <span className="info-label">Województwo:</span>
+              <span className="info-value">{offer.province}</span>
+            </div>
+          )}
+
+          {offer.city && (
+            <div className="info-row">
+              <span className="info-label">Miasto:</span>
+              <span className="info-value">{offer.city}</span>
+            </div>
+          )}
+
+          {offer.postalCode && (
+            <div className="info-row">
+              <span className="info-label">Kod pocztowy:</span>
+              <span className="info-value">{offer.postalCode}</span>
+            </div>
+          )}
+
+          {offer.address && (
+            <div className="info-row">
+              <span className="info-label">Adres:</span>
+              <span className="info-value">{offer.address}</span>
             </div>
           )}
 
@@ -332,7 +418,7 @@ export default function OfferDetail() {
             </span>
           </div>
 
-          <div style={{ marginTop: "24px" }}>
+          <div className="description-section">
             <div className="description-title">Opis:</div>
             <div className="description">{offer.description}</div>
           </div>

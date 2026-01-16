@@ -7,7 +7,6 @@ const API_BASE = "https://apihandly.ddns.net";
 export default function AddOffer() {
   const navigate = useNavigate();
   const { user } = useAuth();
-
   const [formData, setFormData] = useState({
     title: "",
     province: "",
@@ -17,7 +16,6 @@ export default function AddOffer() {
     description: "",
     budget: "",
     category: "",
-    photos: "",
   });
 
   const handleInputChange = (e) => {
@@ -30,11 +28,14 @@ export default function AddOffer() {
 
   const handleSubmit = async () => {
     if (!formData.title || !formData.description || !formData.budget) {
-      alert("Proszę wypełnić wszystkie pola");
+      alert("Proszę wypełnić wymagane pola: Tytuł, Opis i Budżet");
       return;
     }
 
     try {
+      console.log("Submitting offer with data:", formData);
+      console.log("Current user:", user);
+
       const response = await fetch(`${API_BASE}/offers/`, {
         method: "POST",
         headers: {
@@ -47,19 +48,26 @@ export default function AddOffer() {
           description: formData.description,
           creator: user?.id || 1,
           budget: parseFloat(formData.budget) || 0,
-          // you can later add: province, city, etc. if backend supports them
+          // Optional fields - only send if they have values
+          ...(formData.category && { category: formData.category }),
+          ...(formData.province && { province: formData.province }),
+          ...(formData.city && { city: formData.city }),
+          ...(formData.postalCode && { postalCode: formData.postalCode }),
+          ...(formData.address && { address: formData.address }),
         }),
       });
 
       if (response.ok) {
+        const data = await response.json();
+        console.log("Offer created successfully:", data);
         navigate("/dashboard");
       } else {
         const error = await response.json();
-        console.error("Error:", error);
-        alert("Błąd: " + JSON.stringify(error));
+        console.error("Error response:", error);
+        alert("Błąd podczas dodawania oferty: " + JSON.stringify(error));
       }
     } catch (err) {
-      console.error("Connection error:", err);
+      console.error("Error creating offer:", err);
       alert("Błąd połączenia z serwerem");
     }
   };
@@ -75,10 +83,6 @@ export default function AddOffer() {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
-        }
-
-        body {
-          background: #e9f0f4;
         }
 
         .container {
@@ -103,7 +107,7 @@ export default function AddOffer() {
 
         .form-content {
           flex: 1;
-          padding: 0 16px 100px 16px;
+          padding: 0 16px 96px 16px;
         }
 
         .page-title {
@@ -121,7 +125,11 @@ export default function AddOffer() {
           font-size: 16px;
           font-weight: 500;
           margin-bottom: 8px;
-          color: #1f2937;
+        }
+
+        .label-required:after {
+          content: " *";
+          color: #ef4444;
         }
 
         .input {
@@ -130,7 +138,6 @@ export default function AddOffer() {
           border: none;
           padding: 12px 16px;
           font-size: 14px;
-          border-radius: 6px;
           outline: none;
         }
 
@@ -148,9 +155,7 @@ export default function AddOffer() {
           border: none;
           padding: 12px 16px;
           font-size: 14px;
-          border-radius: 6px;
-          resize: vertical;
-          min-height: 120px;
+          resize: none;
           font-family: inherit;
           outline: none;
         }
@@ -176,31 +181,16 @@ export default function AddOffer() {
           margin-bottom: 16px;
         }
 
-        .input-wrapper {
-          position: relative;
-        }
-
-        .input-icon {
-          position: absolute;
-          right: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #9ca3af;
-          font-size: 20px;
-          pointer-events: none;
-        }
-
         .footer {
           position: fixed;
           bottom: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 100%;
           max-width: 576px;
+          width: 100%;
           background-color: white;
           border-top: 1px solid #e5e7eb;
           padding: 16px;
-          z-index: 10;
         }
 
         .footer-content {
@@ -212,14 +202,14 @@ export default function AddOffer() {
         .btn-back {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 4px;
           background: none;
           border: none;
           color: #4b5563;
-          font-size: 16px;
-          font-weight: 500;
-          padding: 10px 14px;
           cursor: pointer;
+          font-size: 16px;
+          padding: 8px 12px;
+          transition: color 0.2s;
         }
 
         .btn-back:hover {
@@ -229,29 +219,19 @@ export default function AddOffer() {
         .btn-submit {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 4px;
           background-color: #3b82f6;
-          color: white;
           border: none;
-          font-size: 16px;
-          font-weight: 500;
-          padding: 12px 24px;
-          border-radius: 8px;
+          color: white;
           cursor: pointer;
+          font-size: 16px;
+          padding: 8px 24px;
+          border-radius: 6px;
           transition: background-color 0.2s;
         }
 
         .btn-submit:hover {
           background-color: #2563eb;
-        }
-
-        /* Make footer full-width on small screens */
-        @media (max-width: 600px) {
-          .footer {
-            left: 0;
-            transform: none;
-            max-width: 100%;
-          }
         }
       `}</style>
 
@@ -264,7 +244,7 @@ export default function AddOffer() {
           <h1 className="page-title">Dodaj nowe ogłoszenie</h1>
 
           <div className="form-group">
-            <label className="label">Tytuł</label>
+            <label className="label label-required">Tytuł</label>
             <input
               type="text"
               name="title"
@@ -272,6 +252,7 @@ export default function AddOffer() {
               onChange={handleInputChange}
               placeholder="Podaj tytuł ogłoszenia"
               className="input"
+              required
             />
           </div>
 
@@ -316,7 +297,7 @@ export default function AddOffer() {
           </div>
 
           <div className="form-group">
-            <label className="label">Opis</label>
+            <label className="label label-required">Opis</label>
             <textarea
               name="description"
               value={formData.description}
@@ -324,12 +305,13 @@ export default function AddOffer() {
               placeholder="Podaj opis ogłoszenia tutaj"
               rows={6}
               className="textarea"
+              required
             />
           </div>
 
           <div className="grid-2 form-group">
             <div>
-              <label className="label">Budżet</label>
+              <label className="label label-required">Budżet</label>
               <input
                 type="number"
                 name="budget"
@@ -337,36 +319,19 @@ export default function AddOffer() {
                 onChange={handleInputChange}
                 placeholder="Podaj kwotę w złotówkach"
                 className="input"
+                required
               />
             </div>
             <div>
               <label className="label">Kategoria</label>
-              <div className="input-wrapper">
-                <input
-                  type="text"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  placeholder="Wyszukaj..."
-                  className="input"
-                />
-                <span className="input-icon">›</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="label">Zdjęcia</label>
-            <div className="input-wrapper">
               <input
                 type="text"
-                name="photos"
-                value={formData.photos}
+                name="category"
+                value={formData.category}
                 onChange={handleInputChange}
-                placeholder="Dodaj zdjęcia (pierwsze będzie okładką)"
+                placeholder="np. Remont, Sprzątanie..."
                 className="input"
               />
-              <span className="input-icon">›</span>
             </div>
           </div>
         </div>
@@ -374,10 +339,12 @@ export default function AddOffer() {
         <div className="footer">
           <div className="footer-content">
             <button onClick={handleBack} className="btn-back">
-              <span>‹</span> Powrót
+              <span>‹</span>
+              <span>Powrót</span>
             </button>
             <button onClick={handleSubmit} className="btn-submit">
-              Dodaj robotę <span>›</span>
+              <span>Dodaj robotę</span>
+              <span>›</span>
             </button>
           </div>
         </div>
