@@ -86,7 +86,7 @@ export default function OfferDetail() {
     );
   }
 
-  const isMyOffer = user && offer.creator === user.id;
+  const isMyOffer = user && offer.creator == user.id;
 
   return (
     <>
