@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider, useAuth } from "./components/AuthContext";
-import { DEV_BYPASS_AUTH } from "./config";
 import Home from "./pages/Home";
 import Logowanie from "./pages/Logowanie";
 import Rejestracja from "./pages/Rejestracja";
-import Zalogowany from "./pages/Zalogowany";
 import Footer from "./components/Footer";
 import AddOffer from "./components/AddOffer";
 import OfferDetail from "./components/OfferDetail";
 import OfferList from "./components/OfferList";
 import "./App.css";
+
+const DEV_BYPASS_AUTH = false;
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth();
@@ -23,7 +23,11 @@ function Layout({ children }) {
   const { user } = useAuth();
   const location = useLocation();
   const hideFooter =
-    location.pathname === "/add" || location.pathname.startsWith("/offer/");
+    location.pathname === "/add" ||
+    location.pathname.startsWith("/offer/") ||
+    location.pathname === "/" ||
+    location.pathname === "/logowanie" ||
+    location.pathname === "/rejestracja";
 
   return (
     <>
@@ -41,15 +45,30 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/logowanie" element={<Logowanie />} />
           <Route path="/rejestracja" element={<Rejestracja />} />
-          <Route path="/offers" element={<OfferList />} />
-          <Route path="/add" element={<AddOffer />} />
-          <Route path="/offer/:id" element={<OfferDetail />} />
 
           <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Zalogowany />
+                <OfferList />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/add"
+            element={
+              <ProtectedRoute>
+                <AddOffer />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/offer/:id"
+            element={
+              <ProtectedRoute>
+                <OfferDetail />
               </ProtectedRoute>
             }
           />

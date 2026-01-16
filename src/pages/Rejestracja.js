@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_BASE = "https://apihandly.ddns.net";
+
 export default function Rejestracja() {
   const navigate = useNavigate();
-
-  const API_USERNAME = "admin";
-  const API_PASSWORD = "admin";
 
   const [formData, setFormData] = useState({
     username: "",
@@ -27,9 +26,9 @@ export default function Rejestracja() {
     setError("");
 
     try {
-      const credentials = btoa(`${API_USERNAME}:${API_PASSWORD}`);
+      const credentials = btoa("admin:admin");
 
-      const response = await fetch("https://apihandly.ddns.net/users/", {
+      const response = await fetch(`${API_BASE}/users/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,13 +45,19 @@ export default function Rejestracja() {
           navigate("/logowanie");
         }, 2000);
       } else {
-        setError(data.message || "Nie udało się zarejestrować...");
+        setError(
+          data.username?.[0] ||
+            data.email?.[0] ||
+            data.detail ||
+            "Nie udało się zarejestrować..."
+        );
       }
     } catch (err) {
       setError("Błąd odpowiedzi serwera... spróbuj ponownie");
       console.error("Błąd rejestracji:", err);
     }
   };
+
   if (success) {
     return (
       <div className="success-message">
@@ -65,8 +70,8 @@ export default function Rejestracja() {
 
   return (
     <>
-      <div class="app">
-        <div class="container">
+      <div className="app">
+        <div className="container">
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="group">
               <p className="title">Rejestracja</p>
@@ -100,7 +105,7 @@ export default function Rejestracja() {
 
               {error && <div className="error">{error}</div>}
 
-              <button class="register-button" type="submit">
+              <button className="register-button" type="submit">
                 Zarejestruj się
               </button>
             </div>

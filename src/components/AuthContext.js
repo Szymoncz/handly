@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from "react";
-import { DEV_BYPASS_AUTH } from "../config";
+
+const API_BASE = "https://apihandly.ddns.net";
+const DEV_BYPASS_AUTH = false;
 
 const AuthContext = createContext(null);
 
@@ -14,7 +16,7 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    const response = await fetch("https://apihandly.ddns.net/api/auth/login/", {
+    const response = await fetch(`${API_BASE}/api/auth/login/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -36,7 +38,7 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    await fetch("https://apihandly.ddns.net/api/auth/logout/", {
+    await fetch(`${API_BASE}/api/auth/logout/`, {
       method: "POST",
       credentials: "include",
     });

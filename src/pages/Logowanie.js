@@ -25,8 +25,8 @@ export default function Logowanie() {
 
   return (
     <>
-      <div class="app">
-        <div class="container">
+      <div className="app">
+        <div className="container">
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="group">
               <p className="title">Zaloguj się!</p>
@@ -50,7 +50,7 @@ export default function Logowanie() {
 
               <input
                 type="submit"
-                class="register-button"
+                className="register-button"
                 value="Zaloguj się do panelu"
               />
             </div>
