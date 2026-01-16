@@ -22,6 +22,11 @@ export default function AddOffer() {
   };
 
   const handleSubmit = async () => {
+    if (!formData.title || !formData.description || !formData.budget) {
+      alert("Proszę wypełnić wszystkie pola");
+      return;
+    }
+
     try {
       const response = await fetch(`${API_BASE}/offers/`, {
         method: "POST",
@@ -31,7 +36,8 @@ export default function AddOffer() {
         },
         credentials: "include",
         body: JSON.stringify({
-          ...formData,
+          title: formData.title,
+          description: formData.description,
           creator: user?.id || 1,
           budget: parseFloat(formData.budget) || 0,
         }),
@@ -40,7 +46,9 @@ export default function AddOffer() {
       if (response.ok) {
         navigate("/dashboard");
       } else {
-        alert("Błąd podczas dodawania oferty");
+        const error = await response.json();
+        console.error("Error response:", error);
+        alert("Błąd podczas dodawania oferty: " + JSON.stringify(error));
       }
     } catch (err) {
       console.error("Error creating offer:", err);
@@ -53,63 +61,204 @@ export default function AddOffer() {
   };
 
   return (
-    <div className="container">
-      <div className="logo-section">
-        <div className="logo">LOGO</div>
+    <>
+      <style>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        .container {
+          min-height: 100vh;
+          background-color: white;
+          display: flex;
+          flex-direction: column;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          max-width: 576px;
+          margin: 0 auto;
+        }
+
+        .logo-section {
+          text-align: center;
+          padding: 24px 0;
+        }
+
+        .logo {
+          font-size: 24px;
+          font-weight: bold;
+        }
+
+        .form-content {
+          flex: 1;
+          padding: 0 16px 96px 16px;
+        }
+
+        .page-title {
+          font-size: 20px;
+          font-weight: 600;
+          margin-bottom: 32px;
+        }
+
+        .form-group {
+          margin-bottom: 24px;
+        }
+
+        .label {
+          display: block;
+          font-size: 16px;
+          font-weight: 500;
+          margin-bottom: 8px;
+        }
+
+        .input {
+          width: 100%;
+          background-color: #f3f4f6;
+          border: none;
+          padding: 12px 16px;
+          font-size: 14px;
+          outline: none;
+        }
+
+        .input:focus {
+          outline: 2px solid #d1d5db;
+        }
+
+        .input::placeholder {
+          color: #9ca3af;
+        }
+
+        .textarea {
+          width: 100%;
+          background-color: #f3f4f6;
+          border: none;
+          padding: 12px 16px;
+          font-size: 14px;
+          resize: none;
+          font-family: inherit;
+          outline: none;
+        }
+
+        .textarea:focus {
+          outline: 2px solid #d1d5db;
+        }
+
+        .textarea::placeholder {
+          color: #9ca3af;
+        }
+
+        .footer {
+          position: fixed;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          max-width: 576px;
+          width: 100%;
+          background-color: white;
+          border-top: 1px solid #e5e7eb;
+          padding: 16px;
+        }
+
+        .footer-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .btn-back {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background: none;
+          border: none;
+          color: #4b5563;
+          cursor: pointer;
+          font-size: 16px;
+          padding: 8px 12px;
+          transition: color 0.2s;
+        }
+
+        .btn-back:hover {
+          color: #1f2937;
+        }
+
+        .btn-submit {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          background-color: #3b82f6;
+          border: none;
+          color: white;
+          cursor: pointer;
+          font-size: 16px;
+          padding: 8px 24px;
+          border-radius: 6px;
+          transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+          background-color: #2563eb;
+        }
+      `}</style>
+
+      <div className="container">
+        <div className="logo-section">
+          <div className="logo">LOGO</div>
+        </div>
+
+        <div className="form-content">
+          <h1 className="page-title">Dodaj nowe ogłoszenie</h1>
+
+          <div className="form-group">
+            <label className="label">Tytuł</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="Podaj tytuł ogłoszenia"
+              className="input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="label">Opis</label>
+            <textarea
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              placeholder="Podaj opis ogłoszenia tutaj"
+              rows={6}
+              className="textarea"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="label">Budżet</label>
+            <input
+              type="number"
+              name="budget"
+              value={formData.budget}
+              onChange={handleInputChange}
+              placeholder="Podaj kwotę w złotówkach"
+              className="input"
+            />
+          </div>
+        </div>
+
+        <div className="footer">
+          <div className="footer-content">
+            <button onClick={handleBack} className="btn-back">
+              <span>‹</span>
+              <span>Powrót</span>
+            </button>
+            <button onClick={handleSubmit} className="btn-submit">
+              <span>Dodaj robotę</span>
+              <span>›</span>
+            </button>
+          </div>
+        </div>
       </div>
-
-      <div className="form-content">
-        <h1 className="page-title">Dodaj nowe ogłoszenie</h1>
-
-        <div className="form-group">
-          <label className="label">Tytuł</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            placeholder="Podaj tytuł ogłoszenia"
-            className="input"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="label">Opis</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            placeholder="Podaj opis ogłoszenia tutaj"
-            rows={6}
-            className="textarea"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="label">Budżet</label>
-          <input
-            type="number"
-            name="budget"
-            value={formData.budget}
-            onChange={handleInputChange}
-            placeholder="Podaj kwotę w złotówkach"
-            className="input"
-          />
-        </div>
-      </div>
-
-      <div className="footer">
-        <div className="footer-content">
-          <button onClick={handleBack} className="btn-back">
-            <span>‹</span>
-            <span>Powrót</span>
-          </button>
-          <button onClick={handleSubmit} className="btn-submit">
-            <span>Dodaj robotę</span>
-            <span>›</span>
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
