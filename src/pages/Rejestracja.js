@@ -49,7 +49,7 @@ export default function Rejestracja() {
           data.username?.[0] ||
             data.email?.[0] ||
             data.detail ||
-            "Nie udało się zarejestrować..."
+            "Nie udało się zarejestrować...",
         );
       }
     } catch (err) {
