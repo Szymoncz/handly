@@ -155,31 +155,47 @@ export default function OfferDetail() {
 
   // Multiple ways to check if this is the user's offer
   let isMyOffer = false;
+  let creatorId = null;
+  let userId = null;
 
+  // Extract creator ID from offer
+  if (offer.creator) {
+    if (typeof offer.creator === "number") {
+      creatorId = offer.creator;
+    } else if (typeof offer.creator === "string") {
+      // Extract from URL like "http://.../users/1/"
+      const match = offer.creator.match(/\/users\/(\d+)\/?/);
+      if (match) {
+        creatorId = parseInt(match[1]);
+      }
+    }
+  }
+
+  // Get user ID
   if (user) {
-    if (offer.creator === user.id) {
-      isMyOffer = true;
-    }
+    userId = user.id;
+  }
 
-    if (
-      typeof offer.creator === "string" &&
-      offer.creator.includes(`/users/${user.id}/`)
-    ) {
-      isMyOffer = true;
-    }
-
-    if (user.url && offer.creator === user.url) {
-      isMyOffer = true;
-    }
-
-    if (creatorInfo && creatorInfo.id === user.id) {
+  // Also check from creatorInfo if available
+  if (creatorInfo && creatorInfo.id && user && user.id) {
+    if (creatorInfo.id === user.id) {
       isMyOffer = true;
     }
   }
 
-  console.log("=== OWNERSHIP CHECK ===");
-  console.log("Is my offer?", isMyOffer);
-  console.log("Delete button will show:", isMyOffer);
+  // Direct comparison
+  if (creatorId && userId && creatorId === userId) {
+    isMyOffer = true;
+  }
+
+  console.log("=== OWNERSHIP CHECK DEBUG ===");
+  console.log("Offer creator (raw):", offer.creator);
+  console.log("Extracted creator ID:", creatorId);
+  console.log("Current user:", user);
+  console.log("User ID:", userId);
+  console.log("Creator info:", creatorInfo);
+  console.log("==> Is my offer?", isMyOffer);
+  console.log("==> Delete button will show:", isMyOffer);
 
   const currentImage = images.length > 0 ? images[currentImageIndex] : null;
 
