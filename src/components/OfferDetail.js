@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -11,14 +11,49 @@ export default function OfferDetail() {
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [creatorInfo, setCreatorInfo] = useState(null);
+  const [images, setImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  useEffect(() => {
-    fetchOffer();
+  const fetchCreatorInfo = useCallback(async (creatorId) => {
+    try {
+      const response = await fetch(`${API_BASE}/users/${creatorId}/`, {
+        headers: {
+          Authorization: "Basic " + btoa("admin:admin"),
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Creator info:", data);
+        setCreatorInfo(data);
+      }
+    } catch (err) {
+      console.error("Error fetching creator info:", err);
+    }
+  }, []);
+
+  const fetchOfferImages = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE}/offer-images/?offer=${id}`, {
+        headers: {
+          Authorization: "Basic " + btoa("admin:admin"),
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched images:", data);
+        setImages(data.results || []);
+      }
+    } catch (err) {
+      console.error("Error fetching images:", err);
+    }
   }, [id]);
 
-  async function fetchOffer() {
+  const fetchOffer = useCallback(async () => {
     try {
-      // FIXED: Changed from fetch`...` to fetch(...)
       const response = await fetch(`${API_BASE}/offers/${id}/`, {
         headers: {
           Authorization: "Basic " + btoa("admin:admin"),
@@ -47,7 +82,6 @@ export default function OfferDetail() {
 
       // Fetch creator info
       if (data.creator) {
-        // Extract ID from URL if creator is a URL
         let creatorId = data.creator;
         if (
           typeof data.creator === "string" &&
@@ -66,33 +100,17 @@ export default function OfferDetail() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [id, user, fetchCreatorInfo]);
 
-  async function fetchCreatorInfo(creatorId) {
-    try {
-      // FIXED: Changed from fetch`...` to fetch(...)
-      const response = await fetch(`${API_BASE}/users/${creatorId}/`, {
-        headers: {
-          Authorization: "Basic " + btoa("admin:admin"),
-        },
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Creator info:", data);
-        setCreatorInfo(data);
-      }
-    } catch (err) {
-      console.error("Error fetching creator info:", err);
-    }
-  }
+  useEffect(() => {
+    fetchOffer();
+    fetchOfferImages();
+  }, [fetchOffer, fetchOfferImages]);
 
   async function handleDelete() {
     if (!window.confirm("Czy na pewno chcesz usunąć tę ofertę?")) return;
 
     try {
-      // FIXED: Changed from fetch`...` to fetch(...)
       const response = await fetch(`${API_BASE}/offers/${id}/`, {
         method: "DELETE",
         headers: {
@@ -117,6 +135,10 @@ export default function OfferDetail() {
     navigate("/dashboard");
   };
 
+  const handleThumbnailClick = (index) => {
+    setCurrentImageIndex(index);
+  };
+
   if (loading) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>Ładowanie...</div>
@@ -135,13 +157,10 @@ export default function OfferDetail() {
   let isMyOffer = false;
 
   if (user) {
-    // Check direct ID match
     if (offer.creator === user.id) {
       isMyOffer = true;
     }
 
-    // Check if creator is a URL containing user ID
-    // FIXED: Changed from .includes`...` to .includes(...)
     if (
       typeof offer.creator === "string" &&
       offer.creator.includes(`/users/${user.id}/`)
@@ -149,12 +168,10 @@ export default function OfferDetail() {
       isMyOffer = true;
     }
 
-    // Check if creator matches user URL
     if (user.url && offer.creator === user.url) {
       isMyOffer = true;
     }
 
-    // Check with creatorInfo
     if (creatorInfo && creatorInfo.id === user.id) {
       isMyOffer = true;
     }
@@ -163,6 +180,8 @@ export default function OfferDetail() {
   console.log("=== OWNERSHIP CHECK ===");
   console.log("Is my offer?", isMyOffer);
   console.log("Delete button will show:", isMyOffer);
+
+  const currentImage = images.length > 0 ? images[currentImageIndex] : null;
 
   return (
     <>
@@ -199,6 +218,17 @@ export default function OfferDetail() {
           display: flex;
           align-items: center;
           justify-content: center;
+          overflow: hidden;
+        }
+
+        .main-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .placeholder-icon {
+          font-size: 80px;
         }
 
         .image-counter {
@@ -218,6 +248,39 @@ export default function OfferDetail() {
         .camera-icon {
           width: 16px;
           height: 16px;
+        }
+
+        .thumbnails-container {
+          display: flex;
+          gap: 12px;
+          padding: 16px;
+          overflow-x: auto;
+        }
+
+        .thumbnail {
+          min-width: 80px;
+          height: 80px;
+          background-color: #cbd5e1;
+          border-radius: 4px;
+          cursor: pointer;
+          flex-shrink: 0;
+          border: 2px solid transparent;
+          transition: border-color 0.2s;
+          overflow: hidden;
+        }
+
+        .thumbnail:hover {
+          border-color: #3b82f6;
+        }
+
+        .thumbnail.active {
+          border-color: #3b82f6;
+        }
+
+        .thumbnail-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
         }
 
         .content-section {
@@ -339,7 +402,20 @@ export default function OfferDetail() {
         <div className="logo-header">LOGO TUTAJ</div>
 
         <div className="image-section">
-          <div style={{ fontSize: "80px" }}>🖼️</div>
+          {currentImage ? (
+            <img
+              src={currentImage.image}
+              alt={currentImage.caption || "Zdjęcie oferty"}
+              className="main-image"
+              onError={(e) => {
+                e.target.style.display = "none";
+                e.target.parentElement.innerHTML =
+                  '<div class="placeholder-icon">🖼️</div>';
+              }}
+            />
+          ) : (
+            <div className="placeholder-icon">🖼️</div>
+          )}
           <div className="image-counter">
             <svg
               className="camera-icon"
@@ -348,9 +424,30 @@ export default function OfferDetail() {
             >
               <path d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" />
             </svg>
-            1/1
+            {images.length > 0
+              ? `${currentImageIndex + 1}/${images.length}`
+              : "0/0"}
           </div>
         </div>
+
+        {images.length > 0 && (
+          <div className="thumbnails-container">
+            {images.map((img, index) => (
+              <div
+                key={img.id}
+                className={`thumbnail ${currentImageIndex === index ? "active" : ""}`}
+                onClick={() => handleThumbnailClick(index)}
+              >
+                <img
+                  src={img.image}
+                  alt={img.caption || `Miniatura ${index + 1}`}
+                  className="thumbnail-image"
+                  onError={(e) => (e.target.style.display = "none")}
+                />
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="content-section">
           <div className="meta-row">

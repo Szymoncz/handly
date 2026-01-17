@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -8,14 +8,37 @@ export default function OfferList() {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
   const [offers, setOffers] = useState([]);
+  const [offerImages, setOfferImages] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchOffers();
+  const fetchOfferFirstImage = useCallback(async (offerId) => {
+    try {
+      const response = await fetch(
+        `${API_BASE}/offer-images/?offer=${offerId}`,
+        {
+          headers: {
+            Authorization: "Basic " + btoa("admin:admin"),
+          },
+          credentials: "include",
+        },
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          setOfferImages((prev) => ({
+            ...prev,
+            [offerId]: data.results[0].image,
+          }));
+        }
+      }
+    } catch (err) {
+      console.error(`Error fetching image for offer ${offerId}:`, err);
+    }
   }, []);
 
-  async function fetchOffers() {
+  const fetchOffers = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE}/offers/`, {
         headers: {
@@ -30,14 +53,24 @@ export default function OfferList() {
 
       const data = await response.json();
       console.log("Fetched offers:", data);
-      setOffers(data.results || []);
+      const fetchedOffers = data.results || [];
+      setOffers(fetchedOffers);
+
+      // Fetch first image for each offer
+      fetchedOffers.forEach((offer) => {
+        fetchOfferFirstImage(offer.id);
+      });
     } catch (err) {
       console.error("Error fetching offers:", err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }
+  }, [fetchOfferFirstImage]);
+
+  useEffect(() => {
+    fetchOffers();
+  }, [fetchOffers]);
 
   const handleLogout = async () => {
     if (window.confirm("Czy na pewno chcesz się wylogować?")) {
@@ -172,6 +205,7 @@ export default function OfferList() {
           align-items: center;
           justify-content: center;
           border-radius: 4px;
+          overflow: hidden;
         }
 
         .offer-image img {
@@ -261,17 +295,32 @@ export default function OfferList() {
                   onClick={() => navigate(`/offer/${offer.id}`)}
                 >
                   <div className="offer-image">
-                    <svg
-                      className="image-placeholder"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                        clipRule="evenodd"
+                    {offerImages[offer.id] ? (
+                      <img
+                        src={offerImages[offer.id]}
+                        alt={offer.title}
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                          e.target.parentElement.innerHTML = `
+                            <svg class="image-placeholder" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                            </svg>
+                          `;
+                        }}
                       />
-                    </svg>
+                    ) : (
+                      <svg
+                        className="image-placeholder"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
                   </div>
 
                   <div className="offer-content">
