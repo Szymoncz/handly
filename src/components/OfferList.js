@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -12,33 +12,11 @@ export default function OfferList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchOfferFirstImage = useCallback(async (offerId) => {
-    try {
-      const response = await fetch(
-        `${API_BASE}/offer-images/?offer=${offerId}`,
-        {
-          headers: {
-            Authorization: "Basic " + btoa("admin:admin"),
-          },
-          credentials: "include",
-        },
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          setOfferImages((prev) => ({
-            ...prev,
-            [offerId]: data.results[0].image,
-          }));
-        }
-      }
-    } catch (err) {
-      console.error(`Error fetching image for offer ${offerId}:`, err);
-    }
+  useEffect(() => {
+    fetchOffers();
   }, []);
 
-  const fetchOffers = useCallback(async () => {
+  async function fetchOffers() {
     try {
       const response = await fetch(`${API_BASE}/offers/`, {
         headers: {
@@ -66,11 +44,33 @@ export default function OfferList() {
     } finally {
       setLoading(false);
     }
-  }, [fetchOfferFirstImage]);
+  }
 
-  useEffect(() => {
-    fetchOffers();
-  }, [fetchOffers]);
+  async function fetchOfferFirstImage(offerId) {
+    try {
+      const response = await fetch(
+        `${API_BASE}/offer-images/?offer=${offerId}`,
+        {
+          headers: {
+            Authorization: "Basic " + btoa("admin:admin"),
+          },
+          credentials: "include",
+        },
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          setOfferImages((prev) => ({
+            ...prev,
+            [offerId]: data.results[0].image,
+          }));
+        }
+      }
+    } catch (err) {
+      console.error(`Error fetching image for offer ${offerId}:`, err);
+    }
+  }
 
   const handleLogout = async () => {
     if (window.confirm("Czy na pewno chcesz się wylogować?")) {

@@ -29,29 +29,19 @@ export function AuthProvider({ children }) {
     }
 
     const data = await response.json();
-
-    // Extract user data: handles { user: {id: 1...} } OR { id: 1... }
-    const userData = data.user || data;
-
-    // Ensure we have a numeric ID
-    const finalUser = {
-      ...userData,
-      id: userData.id || userData.pk || data.id,
-    };
-
-    console.log("Zalogowano użytkownika:", finalUser);
-    setUser(finalUser);
+    setUser(data.user);
   }
 
   async function logout() {
-    try {
-      await fetch(`${API_BASE}/api/auth/logout/`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (e) {
-      console.error("Logout error", e);
+    if (DEV_BYPASS_AUTH) {
+      setUser(null);
+      return;
     }
+
+    await fetch(`${API_BASE}/api/auth/logout/`, {
+      method: "POST",
+      credentials: "include",
+    });
     setUser(null);
   }
 
