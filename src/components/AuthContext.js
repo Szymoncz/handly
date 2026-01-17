@@ -7,7 +7,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(
-    DEV_BYPASS_AUTH ? { id: 1, username: "dev-user" } : null
+    DEV_BYPASS_AUTH ? { id: 1, username: "dev-user" } : null,
   );
 
   async function login(username, password) {
@@ -29,19 +29,29 @@ export function AuthProvider({ children }) {
     }
 
     const data = await response.json();
-    setUser(data.user);
+
+    // Extract user data: handles { user: {id: 1...} } OR { id: 1... }
+    const userData = data.user || data;
+
+    // Ensure we have a numeric ID
+    const finalUser = {
+      ...userData,
+      id: userData.id || userData.pk || data.id,
+    };
+
+    console.log("Zalogowano użytkownika:", finalUser);
+    setUser(finalUser);
   }
 
   async function logout() {
-    if (DEV_BYPASS_AUTH) {
-      setUser(null);
-      return;
+    try {
+      await fetch(`${API_BASE}/api/auth/logout/`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (e) {
+      console.error("Logout error", e);
     }
-
-    await fetch(`${API_BASE}/api/auth/logout/`, {
-      method: "POST",
-      credentials: "include",
-    });
     setUser(null);
   }
 
