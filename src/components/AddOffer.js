@@ -34,8 +34,8 @@ export default function AddOffer() {
     }
 
     try {
-      // Important: Use the ID from AuthContext. If not found, default to 1 for safety.
-      const userId = user?.id || 1;
+      // BACKEND EXPECTS INTEGER ID
+      const userId = user?.id ? parseInt(user.id, 10) : 1;
 
       const response = await fetch(`${API_BASE}/offers/`, {
         method: "POST",
@@ -47,8 +47,7 @@ export default function AddOffer() {
         body: JSON.stringify({
           title: formData.title,
           description: formData.description,
-          // SEND AS URL: This matches the Hyperlinked format
-          creator: `${API_BASE}/users/${userId}/`,
+          creator: userId, // FIXED: Sending integer ID, not URL
           budget: parseFloat(formData.budget) || 0,
         }),
       });
@@ -84,82 +83,78 @@ export default function AddOffer() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "576px",
-        margin: "0 auto",
-        padding: "20px",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <h2>Dodaj nowe ogłoszenie</h2>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-          marginTop: "20px",
-        }}
-      >
-        <input
-          className="input"
-          name="title"
-          placeholder="Tytuł"
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
-        <textarea
-          className="textarea"
-          name="description"
-          placeholder="Opis"
-          rows={5}
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
-        <input
-          className="input"
-          name="budget"
-          type="number"
-          placeholder="Budżet (zł)"
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
-        <input type="file" multiple onChange={handleImageChange} />
-        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-          {imagePreviews.map((p, i) => (
-            <img
-              key={i}
-              src={p}
-              alt="p"
-              style={{ width: "80px", height: "80px", objectFit: "cover" }}
+    <>
+      <style>{`
+        .container { min-height: 100vh; background-color: white; max-width: 576px; margin: 0 auto; font-family: sans-serif; }
+        .logo-section { text-align: center; padding: 24px 0; font-size: 24px; font-weight: bold; }
+        .form-content { padding: 0 16px 96px 16px; }
+        .form-group { margin-bottom: 24px; }
+        .label { display: block; font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+        .input, .textarea { width: 100%; background-color: #f3f4f6; border: none; padding: 12px 16px; font-size: 14px; outline: none; }
+        .image-previews { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-top: 12px; }
+        .footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); max-width: 576px; width: 100%; background: white; border-top: 1px solid #e5e7eb; padding: 16px; display: flex; justify-content: space-between; }
+        .btn-submit { background-color: #3b82f6; color: white; border: none; padding: 8px 24px; border-radius: 6px; cursor: pointer; }
+      `}</style>
+      <div className="container">
+        <div className="logo-section">LOGO</div>
+        <div className="form-content">
+          <div className="form-group">
+            <label className="label">Tytuł</label>
+            <input
+              type="text"
+              name="title"
+              onChange={handleInputChange}
+              className="input"
             />
-          ))}
+          </div>
+          <div className="form-group">
+            <label className="label">Opis</label>
+            <textarea
+              name="description"
+              onChange={handleInputChange}
+              className="textarea"
+              rows={5}
+            />
+          </div>
+          <div className="form-group">
+            <label className="label">Budżet</label>
+            <input
+              type="number"
+              name="budget"
+              onChange={handleInputChange}
+              className="input"
+            />
+          </div>
+          <div className="form-group">
+            <label className="label">Zdjęcia</label>
+            <input type="file" multiple onChange={handleImageChange} />
+            <div className="image-previews">
+              {imagePreviews.map((p, i) => (
+                <img
+                  key={i}
+                  src={p}
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
         </div>
-        <button onClick={handleSubmit} style={btnStyle}>
-          Dodaj robotę
-        </button>
-        <button
-          onClick={() => navigate("/dashboard")}
-          style={{ background: "none", border: "none", cursor: "pointer" }}
-        >
-          Powrót
-        </button>
+        <div className="footer">
+          <button
+            onClick={() => navigate("/dashboard")}
+            style={{ border: "none", background: "none", cursor: "pointer" }}
+          >
+            ‹ Powrót
+          </button>
+          <button onClick={handleSubmit} className="btn-submit">
+            Dodaj robotę ›
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "12px",
-  background: "#f3f4f6",
-  border: "none",
-};
-const btnStyle = {
-  padding: "12px",
-  background: "#3b82f6",
-  color: "white",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer",
-};
