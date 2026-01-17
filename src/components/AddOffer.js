@@ -9,14 +9,11 @@ export default function AddOffer() {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
-    province: "",
-    city: "",
-    postalCode: "",
-    address: "",
     description: "",
     budget: "",
-    category: "",
   });
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +21,15 @@ export default function AddOffer() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+
+    // Create previews
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews(previews);
   };
 
   const handleSubmit = async () => {
@@ -36,6 +42,7 @@ export default function AddOffer() {
       console.log("Submitting offer with data:", formData);
       console.log("Current user:", user);
 
+      // FIXED: Changed from fetch`...` to fetch(...)
       const response = await fetch(`${API_BASE}/offers/`, {
         method: "POST",
         headers: {
@@ -48,18 +55,18 @@ export default function AddOffer() {
           description: formData.description,
           creator: user?.id || 1,
           budget: parseFloat(formData.budget) || 0,
-          // Optional fields - only send if they have values
-          ...(formData.category && { category: formData.category }),
-          ...(formData.province && { province: formData.province }),
-          ...(formData.city && { city: formData.city }),
-          ...(formData.postalCode && { postalCode: formData.postalCode }),
-          ...(formData.address && { address: formData.address }),
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
         console.log("Offer created successfully:", data);
+
+        // Upload images if any
+        if (images.length > 0) {
+          await uploadImages(data.id);
+        }
+
         navigate("/dashboard");
       } else {
         const error = await response.json();
@@ -69,6 +76,32 @@ export default function AddOffer() {
     } catch (err) {
       console.error("Error creating offer:", err);
       alert("Błąd połączenia z serwerem");
+    }
+  };
+
+  const uploadImages = async (offerId) => {
+    for (let i = 0; i < images.length; i++) {
+      const formData = new FormData();
+      formData.append("offer", offerId);
+      formData.append("image", images[i]);
+      formData.append("caption", `Zdjęcie ${i + 1}`);
+
+      try {
+        const response = await fetch(`${API_BASE}/offer-images/`, {
+          method: "POST",
+          headers: {
+            Authorization: "Basic " + btoa("admin:admin"),
+          },
+          credentials: "include",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          console.error("Failed to upload image", i + 1);
+        }
+      } catch (err) {
+        console.error("Error uploading image:", err);
+      }
     }
   };
 
@@ -168,17 +201,48 @@ export default function AddOffer() {
           color: #9ca3af;
         }
 
-        .grid-2 {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
+        .file-input-wrapper {
+          position: relative;
+          overflow: hidden;
+          display: inline-block;
+          width: 100%;
         }
 
-        .grid-2-mb {
+        .file-input-wrapper input[type=file] {
+          position: absolute;
+          left: -9999px;
+        }
+
+        .file-input-label {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          width: 100%;
+          background-color: #f3f4f6;
+          padding: 12px 16px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .file-input-label:hover {
+          background-color: #e5e7eb;
+        }
+
+        .image-previews {
           display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-          margin-bottom: 16px;
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          gap: 12px;
+          margin-top: 12px;
+        }
+
+        .image-preview {
+          width: 100%;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 4px;
+          border: 2px solid #e5e7eb;
         }
 
         .footer {
@@ -257,46 +321,6 @@ export default function AddOffer() {
           </div>
 
           <div className="form-group">
-            <label className="label">Miejsce spotkania</label>
-            <div className="grid-2-mb">
-              <input
-                type="text"
-                name="province"
-                value={formData.province}
-                onChange={handleInputChange}
-                placeholder="Województwo"
-                className="input"
-              />
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                placeholder="Miasto"
-                className="input"
-              />
-            </div>
-            <div className="grid-2">
-              <input
-                type="text"
-                name="postalCode"
-                value={formData.postalCode}
-                onChange={handleInputChange}
-                placeholder="Kod pocztowy"
-                className="input"
-              />
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Adres"
-                className="input"
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
             <label className="label label-required">Opis</label>
             <textarea
               name="description"
@@ -309,30 +333,44 @@ export default function AddOffer() {
             />
           </div>
 
-          <div className="grid-2 form-group">
-            <div>
-              <label className="label label-required">Budżet</label>
-              <input
-                type="number"
-                name="budget"
-                value={formData.budget}
-                onChange={handleInputChange}
-                placeholder="Podaj kwotę w złotówkach"
-                className="input"
-                required
-              />
+          <div className="form-group">
+            <label className="label label-required">Budżet</label>
+            <input
+              type="number"
+              name="budget"
+              value={formData.budget}
+              onChange={handleInputChange}
+              placeholder="Podaj kwotę w złotówkach"
+              className="input"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="label">Zdjęcia</label>
+            <div className="file-input-wrapper">
+              <label className="file-input-label">
+                📷 Wybierz zdjęcia (pierwsze będzie okładką)
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageChange}
+                />
+              </label>
             </div>
-            <div>
-              <label className="label">Kategoria</label>
-              <input
-                type="text"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                placeholder="np. Remont, Sprzątanie..."
-                className="input"
-              />
-            </div>
+            {imagePreviews.length > 0 && (
+              <div className="image-previews">
+                {imagePreviews.map((preview, index) => (
+                  <img
+                    key={index}
+                    src={preview}
+                    alt={`Podgląd ${index + 1}`}
+                    className="image-preview"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
